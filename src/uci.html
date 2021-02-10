@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono">
+</head>
+
+<!-- CSS -->
+
+<style>
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0; padding: 0; border: 0;
+  font: inherit;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+#root {
+  font-family: 'Roboto Mono';
+  font-size: 13px;
+}
+
+main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+#input {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+#input #command {
+  width: 80%;
+  padding: 2px 0 2px 6px;
+  border: 1px solid #ddd;
+  border-right: 0;
+}
+
+#input #send {
+  display: inline-block;
+  padding: 3px 6px 3px 6px;
+  background: #888;
+  color: #fff;
+  font-weight: bold;
+  margin-right: 6px;
+  cursor: pointer;
+}
+
+#input #examples {
+  width: 120px;
+  background: #eee;
+}
+
+#misc {
+  margin-bottom: 10px;
+}
+
+#output {
+  flex: 1 1 auto;
+  width: 100%;
+  border: 1px solid #ddd;
+  padding: 10px;
+  overflow: scroll;
+  box-shadow: inset 1px 1px 2px #eee;
+  font-size: 11px;
+}
+
+</style>
+
+<body>
+<div id="root"></div>
+
+<!-- Javascript -->
+
+<script src="./stockfish.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mithril@2.0.4/mithril.min.js"></script>
+<script>
+
+const $ = (...args) => document.querySelector(...args);
+
+const formatMB = (n) => {
+  return (n ? (n / 1e6).toPrecision(3) : '?') + 'MB';
+};
+
+const RequestProgress = ({ attrs: { url, onFinishDownload } }) => {
+  let state = 'INIT'; // 'LOADING', 'DONE', 'FAILED'
+  let loaded = 0;
+  let total = 0;
+
+  const oninit = () => {
+    state = 'LOADING';
+    m.request({
+      url: url,
+      method: 'GET',
+      responseType: 'arraybuffer',
+      headers: { Accept: '*/*' },
+      config: (xhr) => {
+        xhr.onprogress = (e) => {
+          // TODO: loaded/total size is incosistent between browsers when compression is enabled. (cf. https://bugs.chromium.org/p/chromium/issues/detail?id=463622)
+          loaded = e.loaded;
+          total = e.total;
+          m.redraw();
+        };
+      }
+    }).then(
+      (response) => { state = 'DONE'; onFinishDownload(response); },
+      (e) => { console.error(e); state = 'FAILED'; onFinishDownload(null); }
+    )
+  };
+
+  const view = () => {
+    return m("span", [
+      `${formatMB(loaded)}/${formatMB(total)} [${state}] `,
+      m("span", {
+        style: 'cursor: pointer;',
+        onclick: () => window.alert('On some browsers, download size might look contradicted due to file compression.'),
+      }, '[?]')
+    ]);
+  };
+
+  return { oninit, view };
+};
+
+const App = () => {
+  let stockfish = null;
+  let stockfish_state = 'INIT'; // 'READY', 'FAILED'
+  let output = '';
+  let tail_mode = true;
+
+  const examples = [
+    'uci',
+    'go',
+    'stop',
+    'd',
+    'eval',
+    'position fen r1k4r/ppp1bq1p/2n1N3/6B1/3p2Q1/8/PPP2PPP/R5K1 w - - 0 1',
+    'setoption name Use NNUE value true',
+    'setoption name Use NNUE value false',
+    'setoption name Threads value 1',
+    'setoption name Threads value 4',
+  ];
+
+  const sendCommand = () => {
+    const command = $('#command').value;
+    if (command.length > 0) { stockfish.postMessage(command); }
+  };
+
+  const scrollOutput = () => {
+    if (!tail_mode) { return; }
+    $('#output').scrollTo({ top: $('#output').scrollHeight, behavior: 'smooth' });
+  };
+
+  // Make error catchable
+  const loadStockfish = async (params) => {
+    return await Stockfish(params);
+  };
+
+  const onFinishDownload = (data) => {
+    if (!data) { stockfish_state = 'FAILED'; m.redraw(); return; }
+
+    loadStockfish({ wasmBinary: data })
+    .then(_stockfish => {
+      stockfish = _stockfish;
+      stockfish_state = 'READY';
+      stockfish.addMessageListener((line) => {
+        output += line + '\n';
+        m.redraw();
+      });
+    })
+    .catch(e => { stockfish_state = 'FAILED'; throw e; })
+    .finally(() => m.redraw());
+  };
+
+  const oninit = () => {
+    stockfish_state = 'LOADING';
+  };
+
+  const view = () => {
+    const is_ready = stockfish_state == 'READY';
+
+    return m("main", [
+      m("div#input", [
+        m("input#command", {
+          placeholder: 'Input UCI Command Here',
+          disabled: !is_ready,
+          onkeyup: (e) => {
+            if (e.keyCode != 13) { e.redraw = false; return; }
+            sendCommand();
+          }
+        }),
+        m("span#send", { disabled: !is_ready, onclick: sendCommand }, 'SEND'),
+        m("select#examples", {
+          disabled: !is_ready,
+          onchange: (e) => { $("#command").value = e.target.value; window.setTimeout(sendCommand, 10); }
+        }, [
+          m("option", { value: '' }, "-- EXAMPLE --"),
+          ...examples.map((ex, index) => m("option", { value: ex }, ex)),
+        ])
+      ]),
+      m("div#misc", [
+        m("div", ['- download: ', m(RequestProgress, { url: './stockfish.wasm', onFinishDownload })]),
+        m("div", `- stockfish_state: ${stockfish_state}`),
+        m("div", [
+          m("span", '- tail_mode: '),
+          m("span", { style: 'cursor: pointer;', onclick: () => { tail_mode = !tail_mode; scrollOutput(); } }, [
+            tail_mode ? '[x]' : '[ ]'
+          ]),
+        ]),
+      ]),
+      m("div#output", { onupdate: scrollOutput }, m("pre", output))
+    ]);
+  };
+
+  return { oninit, view };
+};
+
+const isSupported = () => {
+  if (typeof WebAssembly !== 'object') return false;
+  const source = Uint8Array.from([0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 7, 8, 1, 4, 116, 101, 115, 116, 0, 0, 10, 15, 1, 13, 0, 65, 0, 253, 17, 65, 0, 253, 17, 253, 186, 1, 11]);
+  if (typeof WebAssembly.validate !== 'function' || !WebAssembly.validate(source)) return false;
+  if (typeof Atomics !== 'object') return false;
+  if (typeof SharedArrayBuffer !== 'function') return false;
+  return true;
+};
+
+if (!isSupported()) {
+  window.alert("Your browser is not supported.");
+} else {
+  m.mount($("#root"), App);
+}
+
+</script>
+</body>
