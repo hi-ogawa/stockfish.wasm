@@ -2,7 +2,7 @@
 
 #
 # Example
-#   NODE=/usr/bin/node TC=60+0.6 ROUNDS=100 OPENING="-openings file=noob_3moves.epd format=epd policy=round -repeat -games 2" bash misc/match.sh
+#   NODE=/usr/bin/node TC=60+0.6 ROUNDS=100 OPENING="-openings file=noob_3moves.epd format=epd policy=round -repeat -games 2" EXTRA=-debug bash misc/match.sh
 #
 
 CUTECHESS_CLI=${CLI:-"cutechess-cli"}
@@ -17,6 +17,7 @@ DRAW=${DRAW:-"-draw movenumber=40 movecount=4 score=10"}
 RESIGN=${RESIGN:-"-resign movecount=4 score=1000"}
 RESULT=${RESULT:-"-pgnout result.pgn"}
 OPENING=${OPENING:-""}
+EXTRA=${EXTRA:-""}
 
 set -x
 $CUTECHESS_CLI \
@@ -26,4 +27,4 @@ $CUTECHESS_CLI \
   -engine tc=$TC name=nnue      "option.Use NNUE=true"  cmd=$NODE $ENGINE_ARGS \
   -engine tc=$TC name=classical "option.Use NNUE=false" cmd=$NODE $ENGINE_ARGS \
   -rounds $ROUNDS \
-  $OPENING $DRAW $RESIGN $RESULT
+  $OPENING $DRAW $RESIGN $RESULT $EXTRA

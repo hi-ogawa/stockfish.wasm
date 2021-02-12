@@ -137,10 +137,15 @@ endif
 ### Section 4. Public Targets
 ### ==========================================================================
 
-.PHONY: build clean objclean
+.PHONY: install build clean objclean
 
 build:
 	$(MAKE) COMP=$(COMP) all
+
+install: build
+	mkdir -p ../dist
+	cat ../preamble.js stockfish.js > ../dist/stockfish.js
+	cp -f stockfish.worker.js stockfish.wasm uci.js ../dist
 
 # clean all
 clean: objclean

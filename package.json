@@ -11,12 +11,12 @@
     "url": "https://github.com/niklasf/stockfish.wasm/issues",
     "email": "niklas.fiekas@backscattering.de"
   },
-  "main": "stockfish.js",
+  "main": "dist/stockfish.js",
   "files": [
     "Copying.txt",
-    "stockfish.js",
-    "stockfish.wasm",
-    "stockfish.worker.js"
+    "dist/stockfish.js",
+    "dist/stockfish.wasm",
+    "dist/stockfish.worker.js"
   ],
   "scripts": {
     "prepare": "cd src && make clean && make ARCH=wasm build -j && cd .. && cat preamble.js src/stockfish.js > stockfish.js && cp src/stockfish.worker.js src/stockfish.wasm ."

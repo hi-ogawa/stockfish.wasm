@@ -2,6 +2,6 @@
 src/.depend
 src/nn-62ef826d1a6d.nnue
 src/embedded_nnue_data.cpp
-stockfish.js
-stockfish.wasm
-stockfish.worker.js
+src/stockfish.js
+src/stockfish.wasm
+src/stockfish.worker.js
