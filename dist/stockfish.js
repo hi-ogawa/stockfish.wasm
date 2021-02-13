@@ -17,74 +17,2686 @@ var Stockfish = (function() {
 function(Stockfish) {
   Stockfish = Stockfish || {};
 
+function GROWABLE_HEAP_I8() {
+ if (wasmMemory.buffer != buffer) {
+  updateGlobalBufferAndViews(wasmMemory.buffer);
+ }
+ return HEAP8;
+}
 
-function e(){k.buffer!=l&&n(k.buffer);return aa}function p(){k.buffer!=l&&n(k.buffer);return ba}function v(){k.buffer!=l&&n(k.buffer);return ca}function w(){k.buffer!=l&&n(k.buffer);return da}function ea(){k.buffer!=l&&n(k.buffer);return fa}null;var A;A||(A=typeof Stockfish !== 'undefined' ? Stockfish : {});var ha,ia;A.ready=new Promise(function(a,b){ha=a;ia=b});
-(function(){function a(){var g=d.shift();if(!b&&void 0!==g){if("quit"===g)return A.terminate();var m=A.ccall("uci_command","number",["string"],[g]);m&&d.unshift(g);h=m?2*h:1;setTimeout(a,h)}}var b=!1,c=[];A.print=function(g){0===c.length?console.log(g):setTimeout(function(){for(var m=0;m<c.length;m++)c[m](g)})};A.addMessageListener=function(g){c.push(g)};A.removeMessageListener=function(g){g=c.indexOf(g);0<=g&&c.splice(g,1)};A.terminate=function(){b=!0;B.Fa()};var d=[],h=1;A.postMessage=function(g){d.push(g)};
-A.postRun=function(){A.postMessage=function(g){d.push(g);1===d.length&&a()};a()}})();var C={},E;for(E in A)A.hasOwnProperty(E)&&(C[E]=A[E]);var ja=[],ka="./this.program";function la(a,b){throw b;}var ma=!1,F=!1,G=!1;ma="object"===typeof window;F="function"===typeof importScripts;G="object"===typeof process&&"object"===typeof process.versions&&"string"===typeof process.versions.node;var H=A.ENVIRONMENT_IS_PTHREAD||!1;H&&(l=A.buffer);var I="",J,K,L,M;
-if(G){I=F?require("path").dirname(I)+"/":__dirname+"/";J=function(a,b){L||(L=require("fs"));M||(M=require("path"));a=M.normalize(a);return L.readFileSync(a,b?null:"utf8")};K=function(a){a=J(a,!0);a.buffer||(a=new Uint8Array(a));assert(a.buffer);return a};1<process.argv.length&&(ka=process.argv[1].replace(/\\/g,"/"));ja=process.argv.slice(2);process.on("uncaughtException",function(a){if(!(a instanceof N))throw a;});process.on("unhandledRejection",O);la=function(a){process.exit(a)};A.inspect=function(){return"[Emscripten Module object]"};
-var na;try{na=require("worker_threads")}catch(a){throw console.error('The "worker_threads" module is not supported in this node.js build - perhaps a newer version is needed?'),a;}global.Worker=na.Worker}else if(ma||F)F?I=self.location.href:"undefined"!==typeof document&&document.currentScript&&(I=document.currentScript.src),_scriptDir&&(I=_scriptDir),0!==I.indexOf("blob:")?I=I.substr(0,I.lastIndexOf("/")+1):I="",G?(J=function(a,b){L||(L=require("fs"));M||(M=require("path"));a=M.normalize(a);return L.readFileSync(a,
-b?null:"utf8")},K=function(a){a=J(a,!0);a.buffer||(a=new Uint8Array(a));assert(a.buffer);return a}):(J=function(a){var b=new XMLHttpRequest;b.open("GET",a,!1);b.send(null);return b.responseText},F&&(K=function(a){var b=new XMLHttpRequest;b.open("GET",a,!1);b.responseType="arraybuffer";b.send(null);return new Uint8Array(b.response)}));G&&"undefined"===typeof performance&&(global.performance=require("perf_hooks").performance);var oa=A.print||console.log.bind(console),Q=console.warn.bind(console);
-for(E in C)C.hasOwnProperty(E)&&(A[E]=C[E]);C=null;var pa,noExitRuntime;"object"!==typeof WebAssembly&&O("no native wasm support detected");var k,qa,ra=!1;function assert(a,b){a||O("Assertion failed: "+b)}function sa(a){var b=A["_"+a];assert(b,"Cannot call unknown function "+a+", make sure it is exported");return b}
-function ta(a,b,c){c=b+c;for(var d="";!(b>=c);){var h=a[b++];if(!h)break;if(h&128){var g=a[b++]&63;if(192==(h&224))d+=String.fromCharCode((h&31)<<6|g);else{var m=a[b++]&63;h=224==(h&240)?(h&15)<<12|g<<6|m:(h&7)<<18|g<<12|m<<6|a[b++]&63;65536>h?d+=String.fromCharCode(h):(h-=65536,d+=String.fromCharCode(55296|h>>10,56320|h&1023))}}else d+=String.fromCharCode(h)}return d}function R(a){return a?ta(p(),a,void 0):""}
-function ua(a,b,c,d){if(0<d){d=c+d-1;for(var h=0;h<a.length;++h){var g=a.charCodeAt(h);if(55296<=g&&57343>=g){var m=a.charCodeAt(++h);g=65536+((g&1023)<<10)|m&1023}if(127>=g){if(c>=d)break;b[c++]=g}else{if(2047>=g){if(c+1>=d)break;b[c++]=192|g>>6}else{if(65535>=g){if(c+2>=d)break;b[c++]=224|g>>12}else{if(c+3>=d)break;b[c++]=240|g>>18;b[c++]=128|g>>12&63}b[c++]=128|g>>6&63}b[c++]=128|g&63}}b[c]=0}}
-function va(a){for(var b=0,c=0;c<a.length;++c){var d=a.charCodeAt(c);55296<=d&&57343>=d&&(d=65536+((d&1023)<<10)|a.charCodeAt(++c)&1023);127>=d?++b:b=2047>=d?b+2:65535>=d?b+3:b+4}return b}function wa(a){var b=va(a)+1,c=S(b);ua(a,e(),c,b);return c}function xa(a,b){e().set(a,b)}var l,aa,ba,ca,da,fa;
-function n(a){l=a;A.HEAP8=aa=new Int8Array(a);A.HEAP16=new Int16Array(a);A.HEAP32=ca=new Int32Array(a);A.HEAPU8=ba=new Uint8Array(a);A.HEAPU16=new Uint16Array(a);A.HEAPU32=da=new Uint32Array(a);A.HEAPF32=new Float32Array(a);A.HEAPF64=fa=new Float64Array(a)}var ya=67108864;
-if(H)k=A.wasmMemory,l=A.buffer;else if(k=new WebAssembly.Memory({initial:ya/65536,maximum:32768,shared:!0}),!(k.buffer instanceof SharedArrayBuffer))throw Q("requested a shared WebAssembly.Memory but the returned buffer is not a SharedArrayBuffer, indicating that while the browser has SharedArrayBuffer it does not have WebAssembly threads support - you may need to set a flag"),G&&console.log("(on node you may need: --experimental-wasm-threads --experimental-wasm-bulk-memory and also use a recent version)"),
-Error("bad memory");k&&(l=k.buffer);ya=l.byteLength;n(l);var za,Aa=[],Ba=[],Ca=[],Da=[],T=0,Ea=null,U=null;A.preloadedImages={};A.preloadedAudios={};function O(a){if(A.onAbort)A.onAbort(a);H&&console.error("Pthread aborting at "+Error().stack);Q(a);ra=!0;a=new WebAssembly.RuntimeError("abort("+a+"). Build with -s ASSERTIONS=1 for more info.");ia(a);throw a;}
-function Fa(){var a=V;return String.prototype.startsWith?a.startsWith("data:application/octet-stream;base64,"):0===a.indexOf("data:application/octet-stream;base64,")}var V="stockfish.wasm";Fa()||(V=I+V);function Ga(){var a=V;try{if(K)return K(a);throw"both async and sync fetching of the wasm failed";}catch(b){O(b)}}
-function Ha(){return(ma||F)&&"function"===typeof fetch?fetch(V,{credentials:"same-origin"}).then(function(a){if(!a.ok)throw"failed to load wasm binary file at '"+V+"'";return a.arrayBuffer()}).catch(function(){return Ga()}):Promise.resolve().then(function(){return Ga()})}var Ja={21036504:function(){throw"Canceled!";},21036775:function(a,b){setTimeout(function(){Ia(a,b)},0)}};
-function Ka(a){for(;0<a.length;){var b=a.shift();if("function"==typeof b)b(A);else{var c=b.Ja;"number"===typeof c?void 0===b.ma?za.get(c)():za.get(c)(b.ma):c(void 0===b.ma?null:b.ma)}}}function La(a,b){if(0>=a||a>e().length||a&1||0>b)return-28;if(0==b)return 0;2147483647<=b&&(b=Infinity);var c=Atomics.load(v(),W>>2),d=0;if(c==a&&Atomics.compareExchange(v(),W>>2,c,0)==c&&(--b,d=1,0>=b))return 1;a=Atomics.notify(v(),a>>2,b);if(0<=a)return a+d;throw"Atomics.notify returned an unexpected value "+a;}
-A._emscripten_futex_wake=La;function Ma(a){if(H)throw"Internal Error! cleanupThread() can only ever be called from main application thread!";if(!a)throw"Internal Error! Null pthread_ptr in cleanupThread!";v()[a+12>>2]=0;(a=B.ga[a])&&B.ta(a.worker)}
-var B={fa:[],ha:[],Ma:function(){for(var a=0;1>a;++a)B.Aa()},Na:function(){for(var a=X(228),b=0;57>b;++b)w()[a/4+b]=0;v()[a+12>>2]=a;b=a+152;v()[b>>2]=b;var c=X(512);for(b=0;128>b;++b)w()[c/4+b]=0;Atomics.store(w(),a+100>>2,c);Atomics.store(w(),a+40>>2,a);Na(a,!F,1);Oa(a)},Oa:function(){ha(A);B.receiveObjectTransfer=B.Qa;B.setThreadStatus=B.Ta;B.threadCancel=B.Va;B.threadExit=B.Wa},ga:{},Ha:[],Ta:function(){},Ea:function(){for(;0<B.Ha.length;)B.Ha.pop()();H&&Y()&&Pa()},Wa:function(a){var b=Y();b&&
-(Atomics.store(w(),b+4>>2,a),Atomics.store(w(),b+0>>2,1),Atomics.store(w(),b+56>>2,1),Atomics.store(w(),b+60>>2,0),B.Ea(),La(b+0,2147483647),Na(0,0,0),H&&postMessage({cmd:"exit"}))},Va:function(){B.Ea();var a=Y();Atomics.store(w(),a+4>>2,-1);Atomics.store(w(),a+0>>2,1);La(a+0,2147483647);Na(0,0,0);postMessage({cmd:"cancelDone"})},Fa:function(){for(var a in B.ga){var b=B.ga[a];b&&b.worker&&B.ta(b.worker)}B.ga={};for(a=0;a<B.fa.length;++a){var c=B.fa[a];c.terminate()}B.fa=[];for(a=0;a<B.ha.length;++a)c=
-B.ha[a],b=c.ea,B.za(b),c.terminate();B.ha=[]},za:function(a){if(a){if(a.ia){var b=v()[a.ia+100>>2];v()[a.ia+100>>2]=0;Qa(b);Qa(a.ia)}a.ia=0;a.xa&&a.ja&&Qa(a.ja);a.ja=0;a.worker&&(a.worker.ea=null)}},ta:function(a){delete B.ga[a.ea.Ga];B.fa.push(a);B.ha.splice(B.ha.indexOf(a),1);B.za(a.ea);a.ea=void 0},Qa:function(){},Ca:function(a,b){a.onmessage=function(c){var d=c.data,h=d.cmd;a.ea&&(B.ya=a.ea.ia);if(d.targetThread&&d.targetThread!=Y()){var g=B.ga[d.nb];g?g.worker.postMessage(c.data,d.transferList):
-console.error('Internal error! Worker sent a message "'+h+'" to target pthread '+d.targetThread+", but that thread no longer exists!")}else if("processQueuedMainThreadWork"===h)Ra();else if("spawnThread"===h)Sa(c.data);else if("cleanupThread"===h)Ma(d.thread);else if("killThread"===h){c=d.thread;if(H)throw"Internal Error! killThread() can only ever be called from main application thread!";if(!c)throw"Internal Error! Null pthread_ptr in killThread!";v()[c+12>>2]=0;c=B.ga[c];c.worker.terminate();B.za(c);
-B.ha.splice(B.ha.indexOf(c.worker),1);c.worker.ea=void 0}else if("cancelThread"===h){c=d.thread;if(H)throw"Internal Error! cancelThread() can only ever be called from main application thread!";if(!c)throw"Internal Error! Null pthread_ptr in cancelThread!";B.ga[c].worker.postMessage({cmd:"cancel"})}else if("loaded"===h)a.loaded=!0,b&&b(a),a.oa&&(a.oa(),delete a.oa);else if("print"===h)oa("Thread "+d.threadId+": "+d.text);else if("printErr"===h)Q("Thread "+d.threadId+": "+d.text);else if("alert"===
-h)alert("Thread "+d.threadId+": "+d.text);else if("exit"===h)a.ea&&Atomics.load(w(),a.ea.Ga+64>>2)&&B.ta(a);else if("exitProcess"===h)try{Ta(d.returnCode)}catch(m){if(m instanceof N)return;throw m;}else"cancelDone"===h?B.ta(a):"objectTransfer"!==h&&("setimmediate"===c.data.target?a.postMessage(c.data):Q("worker sent an unknown command "+h));B.ya=void 0};a.onerror=function(c){Q("pthread sent an error! "+c.filename+":"+c.lineno+": "+c.message)};G&&(a.on("message",function(c){a.onmessage({data:c})}),
-a.on("error",function(c){a.onerror(c)}),a.on("exit",function(){}));a.postMessage({cmd:"load",urlOrBlob:A.mainScriptUrlOrBlob||_scriptDir,wasmMemory:k,wasmModule:qa})},Aa:function(){B.fa.push(new Worker(I+"stockfish.worker.js"))},Ka:function(){0==B.fa.length&&(B.Aa(),B.Ca(B.fa[0]));return 0<B.fa.length?B.fa.pop():null},bb:function(a){for(a=performance.now()+a;performance.now()<a;);}};A.establishStackSpace=function(a,b){Ua(a,b);Va(a)};A.getNoExitRuntime=function(){return noExitRuntime};
-A.invokeEntryPoint=function(a,b){return za.get(a)(b)};var Wa;Wa=G?function(){var a=process.hrtime();return 1E3*a[0]+a[1]/1E6}:H?function(){return performance.now()-A.__performance_now_clock_drift}:function(){return performance.now()};var Xa=[null,[],[]],Ya={};function Za(a,b,c){return H?Z(2,1,a,b,c):0}function $a(a,b,c){return H?Z(3,1,a,b,c):0}function ab(a,b,c){if(H)return Z(4,1,a,b,c)}
-function bb(){G||F||(pa||(pa={}),pa["Blocking on the main thread is very dangerous, see https://emscripten.org/docs/porting/pthreads.html#blocking-on-the-main-browser-thread"]||(pa["Blocking on the main thread is very dangerous, see https://emscripten.org/docs/porting/pthreads.html#blocking-on-the-main-browser-thread"]=1,Q("Blocking on the main thread is very dangerous, see https://emscripten.org/docs/porting/pthreads.html#blocking-on-the-main-browser-thread")))}
-function cb(a,b,c){if(0>=a||a>e().length||a&1)return-28;if(ma){if(Atomics.load(v(),a>>2)!=b)return-6;var d=performance.now();c=d+c;for(Atomics.exchange(v(),W>>2,a);;){d=performance.now();if(d>c)return Atomics.exchange(v(),W>>2,0),-73;d=Atomics.exchange(v(),W>>2,0);if(0==d)break;Ra();if(Atomics.load(v(),a>>2)!=b)return-6;Atomics.exchange(v(),W>>2,a)}return 0}a=Atomics.wait(v(),a>>2,b,c);if("timed-out"===a)return-73;if("not-equal"===a)return-6;if("ok"===a)return 0;throw"Atomics.wait returned an unexpected value "+
-a;}function Z(a,b){for(var c=arguments.length-2,d=db(),h=S(8*c),g=h>>3,m=0;m<c;m++){var r=arguments[2+m];ea()[g+m]=r}c=eb(a,c,h,b);Va(d);return c}var fb=[],gb=[],hb=[0,"undefined"!==typeof document?document:0,"undefined"!==typeof window?window:0];function ib(a){a=2<a?R(a):a;return hb[a]||("undefined"!==typeof document?document.querySelector(a):void 0)}
-function jb(a,b,c){var d=ib(a);if(!d)return-4;d.sa&&(v()[d.sa>>2]=b,v()[d.sa+4>>2]=c);if(d.Da||!d.eb)d.Da&&(d=d.Da),a=!1,d.ra&&d.ra.qa&&(a=d.ra.qa.getParameter(2978),a=0===a[0]&&0===a[1]&&a[2]===d.width&&a[3]===d.height),d.width=b,d.height=c,a&&d.ra.qa.viewport(0,0,b,c);else{if(d.sa){d=v()[d.sa+8>>2];a=a?R(a):"";var h=db(),g=S(12),m=0;if(a){m=va(a)+1;var r=X(m);ua(a,p(),r,m);m=r}v()[g>>2]=m;v()[g+4>>2]=b;v()[g+8>>2]=c;kb(0,d,657457152,0,m,g);Va(h);return 1}return-4}return 0}
-function lb(a,b,c){return H?Z(5,1,a,b,c):jb(a,b,c)}function mb(a){var b=a.getExtension("ANGLE_instanced_arrays");b&&(a.vertexAttribDivisor=function(c,d){b.vertexAttribDivisorANGLE(c,d)},a.drawArraysInstanced=function(c,d,h,g){b.drawArraysInstancedANGLE(c,d,h,g)},a.drawElementsInstanced=function(c,d,h,g,m){b.drawElementsInstancedANGLE(c,d,h,g,m)})}
-function nb(a){var b=a.getExtension("OES_vertex_array_object");b&&(a.createVertexArray=function(){return b.createVertexArrayOES()},a.deleteVertexArray=function(c){b.deleteVertexArrayOES(c)},a.bindVertexArray=function(c){b.bindVertexArrayOES(c)},a.isVertexArray=function(c){return b.isVertexArrayOES(c)})}function ob(a){var b=a.getExtension("WEBGL_draw_buffers");b&&(a.drawBuffers=function(c,d){b.drawBuffersWEBGL(c,d)})}
-function pb(a){a||(a=qb);if(!a.La){a.La=!0;var b=a.qa;mb(b);nb(b);ob(b);b.fb=b.getExtension("EXT_disjoint_timer_query");b.kb=b.getExtension("WEBGL_multi_draw");(b.getSupportedExtensions()||[]).forEach(function(c){0>c.indexOf("lose_context")&&0>c.indexOf("debug")&&b.getExtension(c)})}}var qb,rb=["default","low-power","high-performance"],sb={};
-function tb(){if(!ub){var a={USER:"web_user",LOGNAME:"web_user",PATH:"/",PWD:"/",HOME:"/home/web_user",LANG:("object"===typeof navigator&&navigator.languages&&navigator.languages[0]||"C").replace("-","_")+".UTF-8",_:ka||"./this.program"},b;for(b in sb)a[b]=sb[b];var c=[];for(b in a)c.push(b+"="+a[b]);ub=c}return ub}var ub;
-function vb(a,b){if(H)return Z(6,1,a,b);var c=0;tb().forEach(function(d,h){var g=b+c;h=v()[a+4*h>>2]=g;for(g=0;g<d.length;++g)e()[h++>>0]=d.charCodeAt(g);e()[h>>0]=0;c+=d.length+1});return 0}function wb(a,b){if(H)return Z(7,1,a,b);var c=tb();v()[a>>2]=c.length;var d=0;c.forEach(function(h){d+=h.length+1});v()[b>>2]=d;return 0}function xb(a){return H?Z(8,1,a):0}function zb(a,b,c,d){if(H)return Z(9,1,a,b,c,d);a=Ya.hb(a);b=Ya.gb(a,b,c);v()[d>>2]=b;return 0}
-function Ab(a,b,c,d,h){if(H)return Z(10,1,a,b,c,d,h)}function Bb(a,b,c,d){if(H)return Z(11,1,a,b,c,d);for(var h=0,g=0;g<c;g++){for(var m=v()[b+8*g>>2],r=v()[b+(8*g+4)>>2],y=0;y<r;y++){var q=p()[m+y],u=Xa[a];0===q||10===q?((1===a?oa:Q)(ta(u,0)),u.length=0):u.push(q)}h+=r}v()[d>>2]=h;return 0}
-function Sa(a){if(H)throw"Internal Error! spawnThread() can only ever be called from main application thread!";var b=B.Ka();if(void 0!==b.ea)throw"Internal error!";if(!a.na)throw"Internal error, no pthread ptr!";B.ha.push(b);for(var c=X(512),d=0;128>d;++d)v()[c+4*d>>2]=0;var h=a.ja+a.ka;d=B.ga[a.na]={worker:b,ja:a.ja,ka:a.ka,xa:a.xa,Ga:a.na,ia:a.na};var g=d.ia>>2;Atomics.store(w(),g,0);Atomics.store(w(),g+1,0);Atomics.store(w(),g+2,0);Atomics.store(w(),g+16,a.detached);Atomics.store(w(),g+25,c);Atomics.store(w(),
-g+11,0);Atomics.store(w(),g+10,d.ia);Atomics.store(w(),g+20,a.ka);Atomics.store(w(),g+19,h);Atomics.store(w(),g+26,a.ka);Atomics.store(w(),g+28,h);Atomics.store(w(),g+29,a.detached);Atomics.store(w(),g+31,a.Ra);Atomics.store(w(),g+32,a.Sa);c=Cb()+40;Atomics.store(w(),g+43,c);b.ea=d;var m={cmd:"run",start_routine:a.Ua,arg:a.ma,threadInfoStruct:a.na,stackBase:a.ja,stackSize:a.ka};b.oa=function(){m.time=performance.now();b.postMessage(m,a.ab)};b.loaded&&(b.oa(),delete b.oa)}
-function Db(a,b){if(!a)return Q("pthread_join attempted on a null thread pointer!"),71;if(H&&Y()==a)return Q("PThread "+a+" is attempting to join to itself!"),16;if(!H&&Eb()==a)return Q("Main thread "+a+" is attempting to join to itself!"),16;if(v()[a+12>>2]!==a)return Q("pthread_join attempted on thread "+a+", which does not point to a valid thread, or does not exist anymore!"),71;if(Atomics.load(w(),a+64>>2))return Q("Attempted to join thread "+a+", which was already detached!"),28;for(bb();;){var c=
-Atomics.load(w(),a+0>>2);if(1==c)return c=Atomics.load(w(),a+4>>2),b&&(v()[b>>2]=c),Atomics.store(w(),a+64>>2,1),H?postMessage({cmd:"cleanupThread",thread:a}):Ma(a),0;if(H){var d=Y();if(d&&!Atomics.load(w(),d+56>>2)&&2==Atomics.load(w(),d+0>>2))throw"Canceled!";}H||Ra();cb(a+0,c,H?100:1)}}function Fb(a){return 0===a%4&&(0!==a%100||0===a%400)}function Gb(a,b){for(var c=0,d=0;d<=b;c+=a[d++]);return c}var Hb=[31,29,31,30,31,30,31,31,30,31,30,31],Ib=[31,28,31,30,31,30,31,31,30,31,30,31];
-function Jb(a,b){for(a=new Date(a.getTime());0<b;){var c=a.getMonth(),d=(Fb(a.getFullYear())?Hb:Ib)[c];if(b>d-a.getDate())b-=d-a.getDate()+1,a.setDate(1),11>c?a.setMonth(c+1):(a.setMonth(0),a.setFullYear(a.getFullYear()+1));else{a.setDate(a.getDate()+b);break}}return a}
-function Kb(a,b,c,d){function h(f,t,x){for(f="number"===typeof f?f.toString():f||"";f.length<t;)f=x[0]+f;return f}function g(f,t){return h(f,t,"0")}function m(f,t){function x(yb){return 0>yb?-1:0<yb?1:0}var P;0===(P=x(f.getFullYear()-t.getFullYear()))&&0===(P=x(f.getMonth()-t.getMonth()))&&(P=x(f.getDate()-t.getDate()));return P}function r(f){switch(f.getDay()){case 0:return new Date(f.getFullYear()-1,11,29);case 1:return f;case 2:return new Date(f.getFullYear(),0,3);case 3:return new Date(f.getFullYear(),
-0,2);case 4:return new Date(f.getFullYear(),0,1);case 5:return new Date(f.getFullYear()-1,11,31);case 6:return new Date(f.getFullYear()-1,11,30)}}function y(f){f=Jb(new Date(f.da+1900,0,1),f.wa);var t=new Date(f.getFullYear()+1,0,4),x=r(new Date(f.getFullYear(),0,4));t=r(t);return 0>=m(x,f)?0>=m(t,f)?f.getFullYear()+1:f.getFullYear():f.getFullYear()-1}var q=v()[d+40>>2];d={Za:v()[d>>2],Ya:v()[d+4>>2],ua:v()[d+8>>2],pa:v()[d+12>>2],la:v()[d+16>>2],da:v()[d+20>>2],va:v()[d+24>>2],wa:v()[d+28>>2],ob:v()[d+
-32>>2],Xa:v()[d+36>>2],$a:q?R(q):""};c=R(c);q={"%c":"%a %b %d %H:%M:%S %Y","%D":"%m/%d/%y","%F":"%Y-%m-%d","%h":"%b","%r":"%I:%M:%S %p","%R":"%H:%M","%T":"%H:%M:%S","%x":"%m/%d/%y","%X":"%H:%M:%S","%Ec":"%c","%EC":"%C","%Ex":"%m/%d/%y","%EX":"%H:%M:%S","%Ey":"%y","%EY":"%Y","%Od":"%d","%Oe":"%e","%OH":"%H","%OI":"%I","%Om":"%m","%OM":"%M","%OS":"%S","%Ou":"%u","%OU":"%U","%OV":"%V","%Ow":"%w","%OW":"%W","%Oy":"%y"};for(var u in q)c=c.replace(new RegExp(u,"g"),q[u]);var D="Sunday Monday Tuesday Wednesday Thursday Friday Saturday".split(" "),
-z="January February March April May June July August September October November December".split(" ");q={"%a":function(f){return D[f.va].substring(0,3)},"%A":function(f){return D[f.va]},"%b":function(f){return z[f.la].substring(0,3)},"%B":function(f){return z[f.la]},"%C":function(f){return g((f.da+1900)/100|0,2)},"%d":function(f){return g(f.pa,2)},"%e":function(f){return h(f.pa,2," ")},"%g":function(f){return y(f).toString().substring(2)},"%G":function(f){return y(f)},"%H":function(f){return g(f.ua,
-2)},"%I":function(f){f=f.ua;0==f?f=12:12<f&&(f-=12);return g(f,2)},"%j":function(f){return g(f.pa+Gb(Fb(f.da+1900)?Hb:Ib,f.la-1),3)},"%m":function(f){return g(f.la+1,2)},"%M":function(f){return g(f.Ya,2)},"%n":function(){return"\n"},"%p":function(f){return 0<=f.ua&&12>f.ua?"AM":"PM"},"%S":function(f){return g(f.Za,2)},"%t":function(){return"\t"},"%u":function(f){return f.va||7},"%U":function(f){var t=new Date(f.da+1900,0,1),x=0===t.getDay()?t:Jb(t,7-t.getDay());f=new Date(f.da+1900,f.la,f.pa);return 0>
-m(x,f)?g(Math.ceil((31-x.getDate()+(Gb(Fb(f.getFullYear())?Hb:Ib,f.getMonth()-1)-31)+f.getDate())/7),2):0===m(x,t)?"01":"00"},"%V":function(f){var t=new Date(f.da+1901,0,4),x=r(new Date(f.da+1900,0,4));t=r(t);var P=Jb(new Date(f.da+1900,0,1),f.wa);return 0>m(P,x)?"53":0>=m(t,P)?"01":g(Math.ceil((x.getFullYear()<f.da+1900?f.wa+32-x.getDate():f.wa+1-x.getDate())/7),2)},"%w":function(f){return f.va},"%W":function(f){var t=new Date(f.da,0,1),x=1===t.getDay()?t:Jb(t,0===t.getDay()?1:7-t.getDay()+1);f=
-new Date(f.da+1900,f.la,f.pa);return 0>m(x,f)?g(Math.ceil((31-x.getDate()+(Gb(Fb(f.getFullYear())?Hb:Ib,f.getMonth()-1)-31)+f.getDate())/7),2):0===m(x,t)?"01":"00"},"%y":function(f){return(f.da+1900).toString().substring(2)},"%Y":function(f){return f.da+1900},"%z":function(f){f=f.Xa;var t=0<=f;f=Math.abs(f)/60;return(t?"+":"-")+String("0000"+(f/60*100+f%60)).slice(-4)},"%Z":function(f){return f.$a},"%%":function(){return"%"}};for(u in q)0<=c.indexOf(u)&&(c=c.replace(new RegExp(u,"g"),q[u](d)));u=
-Lb(c);if(u.length>b)return 0;xa(u,a);return u.length-1}H||B.Ma();var Mb=[null,function(a,b){if(H)return Z(1,1,a,b)},Za,$a,ab,lb,vb,wb,xb,zb,Ab,Bb];function Lb(a){var b=Array(va(a)+1);ua(a,b,0,b.length);return b}H||Ba.push({Ja:function(){Nb()}});
-var Rb={c:function(a,b,c,d){O("Assertion failed: "+R(a)+", at: "+[b?R(b):"unknown filename",c,d?R(d):"unknown function"])},k:Za,q:$a,r:ab,D:function(a,b){if(a==b)postMessage({cmd:"processQueuedMainThreadWork"});else if(H)postMessage({targetThread:a,cmd:"processThreadQueue"});else{a=(a=B.ga[a])&&a.worker;if(!a)return;a.postMessage({cmd:"processThreadQueue"})}return 1},b:function(){O()},E:function(a,b){if(0===a)a=Date.now();else if(1===a||4===a)a=Wa();else return v()[Ob()>>2]=28,-1;v()[b>>2]=a/1E3|
-0;v()[b+4>>2]=a%1E3*1E6|0;return 0},o:function(a,b,c){gb.length=0;var d;for(c>>=2;d=p()[b++];)(d=105>d)&&c&1&&c++,gb.push(d?ea()[c++>>1]:v()[c]),++c;return Ja[a].apply(null,gb)},y:bb,n:function(){},f:cb,e:La,g:Wa,u:function(a,b,c){p().copyWithin(a,b,b+c)},z:function(a,b,c){fb.length=b;c>>=3;for(var d=0;d<b;d++)fb[d]=ea()[c+d];return(0>a?Ja[-a-1]:Mb[a]).apply(null,fb)},d:function(a){a>>>=0;var b=p().length;if(a<=b||2147483648<a)return!1;for(var c=1;4>=c;c*=2){var d=b*(1+.2/c);d=Math.min(d,a+100663296);
-d=Math.max(16777216,a,d);0<d%65536&&(d+=65536-d%65536);a:{try{k.grow(Math.min(2147483648,d)-l.byteLength+65535>>>16);n(k.buffer);var h=1;break a}catch(g){}h=void 0}if(h)return!0}return!1},A:function(a,b,c){return ib(a)?jb(a,b,c):lb(a,b,c)},m:function(){},C:function(a,b){b>>=2;var c=v()[b+6];b={alpha:!!v()[b],depth:!!v()[b+1],stencil:!!v()[b+2],antialias:!!v()[b+3],premultipliedAlpha:!!v()[b+4],preserveDrawingBuffer:!!v()[b+5],powerPreference:rb[c],failIfMajorPerformanceCaveat:!!v()[b+7],Pa:v()[b+
-8],jb:v()[b+9],Ba:v()[b+10],Ia:v()[b+11],lb:v()[b+12],mb:v()[b+13]};a=ib(a);if(!a||b.Ia)b=0;else if(a=a.getContext("webgl",b)){c=X(8);v()[c+4>>2]=Y();var d={ib:c,attributes:b,version:b.Pa,qa:a};a.canvas&&(a.canvas.ra=d);("undefined"===typeof b.Ba||b.Ba)&&pb(d);b=c}else b=0;return b},w:vb,x:wb,h:function(a){Ta(a)},i:xb,p:zb,s:Ab,j:Bb,t:function(){B.Na()},a:k||A.wasmMemory,l:function(a,b,c,d){if("undefined"===typeof SharedArrayBuffer)return Q("Current environment does not support SharedArrayBuffer, pthreads are not available!"),
-6;if(!a)return Q("pthread_create called with a null thread pointer!"),28;var h=[];if(H&&0===h.length)return Pb(687865856,a,b,c,d);var g=0,m=0,r=0,y=0;if(b&&-1!=b){var q=v()[b>>2];q+=81920;g=v()[b+8>>2];m=0!==v()[b+12>>2];if(0===v()[b+16>>2]){var u=v()[b+20>>2],D=v()[b+24>>2];var z=B.ya?B.ya:Y();r=b+20;y=b+24;if(r||y)if(z)if(v()[z+12>>2]!==z)Q("pthread_getschedparam attempted on thread "+z+", which does not point to a valid thread, or does not exist anymore!");else{var f=Atomics.load(w(),z+104+20>>
-2);z=Atomics.load(w(),z+104+24>>2);r&&(v()[r>>2]=f);y&&(v()[y>>2]=z)}else Q("pthread_getschedparam called with a null thread pointer!");r=v()[b+20>>2];y=v()[b+24>>2];v()[b+20>>2]=u;v()[b+24>>2]=D}else r=v()[b+20>>2],y=v()[b+24>>2]}else q=2097152;(b=0==g)?g=Qb(16,q):(g-=q,assert(0<g));u=X(228);for(D=0;57>D;++D)w()[(u>>2)+D]=0;v()[a>>2]=u;v()[u+12>>2]=u;a=u+152;v()[a>>2]=a;c={ja:g,ka:q,xa:b,Ra:r,Sa:y,detached:m,Ua:c,na:u,ma:d,ab:h};H?(c.cb="spawnThread",postMessage(c,h)):Sa(c);return 0},B:function(a,
-b){return Db(a,b)},v:function(a,b,c,d){return Kb(a,b,c,d)}};
-(function(){function a(h,g){A.asm=h.exports;za=A.asm.F;qa=g;if(!H){var m=B.fa.length;B.fa.forEach(function(r){B.Ca(r,function(){if(!--m&&(T--,0==T&&(null!==Ea&&(clearInterval(Ea),Ea=null),U))){var y=U;U=null;y()}})})}}function b(h){a(h.instance,h.module)}function c(h){return Ha().then(function(g){return WebAssembly.instantiate(g,d)}).then(h,function(g){Q("failed to asynchronously prepare wasm: "+g);O(g)})}var d={a:Rb};H||(assert(!H,"addRunDependency cannot be used in a pthread worker"),T++);if(A.instantiateWasm)try{return A.instantiateWasm(d,
-a)}catch(h){return Q("Module.instantiateWasm callback failed with error: "+h),!1}(function(){return"function"!==typeof WebAssembly.instantiateStreaming||Fa()||"function"!==typeof fetch?c(b):fetch(V,{credentials:"same-origin"}).then(function(h){return WebAssembly.instantiateStreaming(h,d).then(b,function(g){Q("wasm streaming compile failed: "+g);Q("falling back to ArrayBuffer instantiation");return c(b)})})})().catch(ia);return{}})();
-var Nb=A.___wasm_call_ctors=function(){return(Nb=A.___wasm_call_ctors=A.asm.G).apply(null,arguments)};A._main=function(){return(A._main=A.asm.H).apply(null,arguments)};var Qa=A._free=function(){return(Qa=A._free=A.asm.I).apply(null,arguments)};A._uci_command=function(){return(A._uci_command=A.asm.J).apply(null,arguments)};var Cb=A._emscripten_get_global_libc=function(){return(Cb=A._emscripten_get_global_libc=A.asm.K).apply(null,arguments)};
-A.___em_js__initPthreadsJS=function(){return(A.___em_js__initPthreadsJS=A.asm.L).apply(null,arguments)};
-var Ob=A.___errno_location=function(){return(Ob=A.___errno_location=A.asm.M).apply(null,arguments)},X=A._malloc=function(){return(X=A._malloc=A.asm.N).apply(null,arguments)},Y=A._pthread_self=function(){return(Y=A._pthread_self=A.asm.O).apply(null,arguments)},Pa=A.___pthread_tsd_run_dtors=function(){return(Pa=A.___pthread_tsd_run_dtors=A.asm.P).apply(null,arguments)},Oa=A._emscripten_register_main_browser_thread_id=function(){return(Oa=A._emscripten_register_main_browser_thread_id=A.asm.Q).apply(null,
-arguments)},Eb=A._emscripten_main_browser_thread_id=function(){return(Eb=A._emscripten_main_browser_thread_id=A.asm.R).apply(null,arguments)},Ia=A.__emscripten_do_dispatch_to_thread=function(){return(Ia=A.__emscripten_do_dispatch_to_thread=A.asm.S).apply(null,arguments)},Pb=A._emscripten_sync_run_in_main_thread_4=function(){return(Pb=A._emscripten_sync_run_in_main_thread_4=A.asm.T).apply(null,arguments)},Ra=A._emscripten_main_thread_process_queued_calls=function(){return(Ra=A._emscripten_main_thread_process_queued_calls=
-A.asm.U).apply(null,arguments)},eb=A._emscripten_run_in_main_runtime_thread_js=function(){return(eb=A._emscripten_run_in_main_runtime_thread_js=A.asm.V).apply(null,arguments)},kb=A.__emscripten_call_on_thread=function(){return(kb=A.__emscripten_call_on_thread=A.asm.W).apply(null,arguments)};A._emscripten_tls_init=function(){return(A._emscripten_tls_init=A.asm.X).apply(null,arguments)};
-var Na=A.__emscripten_thread_init=function(){return(Na=A.__emscripten_thread_init=A.asm.Y).apply(null,arguments)},db=A.stackSave=function(){return(db=A.stackSave=A.asm.Z).apply(null,arguments)},Va=A.stackRestore=function(){return(Va=A.stackRestore=A.asm._).apply(null,arguments)},S=A.stackAlloc=function(){return(S=A.stackAlloc=A.asm.$).apply(null,arguments)},Ua=A._emscripten_stack_set_limits=function(){return(Ua=A._emscripten_stack_set_limits=A.asm.aa).apply(null,arguments)},Qb=A._memalign=function(){return(Qb=
-A._memalign=A.asm.ba).apply(null,arguments)},W=A.__emscripten_main_thread_futex=22112864;A.ccall=function(a,b,c,d){var h={string:function(q){var u=0;if(null!==q&&void 0!==q&&0!==q){var D=(q.length<<2)+1,z=u=S(D);ua(q,p(),z,D)}return u},array:function(q){var u=S(q.length);xa(q,u);return u}},g=sa(a),m=[];a=0;if(d)for(var r=0;r<d.length;r++){var y=h[c[r]];y?(0===a&&(a=db()),m[r]=y(d[r])):m[r]=d[r]}c=g.apply(null,m);c=function(q){return"string"===b?R(q):"boolean"===b?!!q:q}(c);0!==a&&Va(a);return c};
-A.PThread=B;A.PThread=B;A.wasmMemory=k;A.ExitStatus=N;var Sb;function N(a){this.name="ExitStatus";this.message="Program terminated with exit("+a+")";this.status=a}U=function Tb(){Sb||Ub();Sb||(U=Tb)};
-function Ub(a){a=a||ja;if(!(0<T||(H||Ka(Aa),0<T||Sb||(Sb=!0,A.calledRun=!0,ra)))){Ka(Ba);H||Ka(Ca);ha(A);if(A.onRuntimeInitialized)A.onRuntimeInitialized();if(Vb){var b=A._main;a=a||[];var c=a.length+1,d=S(4*(c+1));v()[d>>2]=wa(ka);for(var h=1;h<c;h++)v()[(d>>2)+h]=wa(a[h-1]);v()[(d>>2)+c]=0;try{var g=b(c,d);Ta(g,!0)}catch(m){m instanceof N||("unwind"==m?noExitRuntime=!0:((b=m)&&"object"===typeof m&&m.stack&&(b=[m,m.stack]),Q("exception thrown: "+b),la(1,m)))}finally{}}if(!H){if(A.postRun)for("function"==
-typeof A.postRun&&(A.postRun=[A.postRun]);A.postRun.length;)b=A.postRun.shift(),Da.unshift(b);Ka(Da)}}}A.run=Ub;function Ta(a,b){if(!b||!noExitRuntime||0!==a){if(!b&&H)throw postMessage({cmd:"exitProcess",returnCode:a}),new N(a);noExitRuntime||(B.Fa(),ra=!0);la(a,new N(a))}}var Vb=!0;noExitRuntime=!H;H?B.Oa():Ub();
+function GROWABLE_HEAP_U8() {
+ if (wasmMemory.buffer != buffer) {
+  updateGlobalBufferAndViews(wasmMemory.buffer);
+ }
+ return HEAPU8;
+}
+
+function GROWABLE_HEAP_I32() {
+ if (wasmMemory.buffer != buffer) {
+  updateGlobalBufferAndViews(wasmMemory.buffer);
+ }
+ return HEAP32;
+}
+
+function GROWABLE_HEAP_U32() {
+ if (wasmMemory.buffer != buffer) {
+  updateGlobalBufferAndViews(wasmMemory.buffer);
+ }
+ return HEAPU32;
+}
+
+function GROWABLE_HEAP_F64() {
+ if (wasmMemory.buffer != buffer) {
+  updateGlobalBufferAndViews(wasmMemory.buffer);
+ }
+ return HEAPF64;
+}
+
+null;
+
+var Module = typeof Stockfish !== "undefined" ? Stockfish : {};
+
+var readyPromiseResolve, readyPromiseReject;
+
+Module["ready"] = new Promise(function(resolve, reject) {
+ readyPromiseResolve = resolve;
+ readyPromiseReject = reject;
+});
+
+(function() {
+ var quit = false;
+ var listeners = [];
+ Module["print"] = function(line) {
+  if (listeners.length === 0) console.log(line); else setTimeout(function() {
+   for (var i = 0; i < listeners.length; i++) listeners[i](line);
+  });
+ };
+ Module["addMessageListener"] = function(listener) {
+  listeners.push(listener);
+ };
+ Module["removeMessageListener"] = function(listener) {
+  var idx = listeners.indexOf(listener);
+  if (idx >= 0) listeners.splice(idx, 1);
+ };
+ Module["terminate"] = function() {
+  quit = true;
+  PThread.terminateAllThreads();
+ };
+ var queue = [];
+ var backoff = 1;
+ function poll() {
+  var command = queue.shift();
+  if (quit || command === undefined) return;
+  if (command === "quit") return Module["terminate"]();
+  var tryLater = Module["ccall"]("uci_command", "number", [ "string" ], [ command ]);
+  if (tryLater) queue.unshift(command);
+  backoff = tryLater ? backoff * 2 : 1;
+  setTimeout(poll, backoff);
+ }
+ Module["postMessage"] = function(command) {
+  queue.push(command);
+ };
+ Module["postRun"] = function() {
+  Module["postMessage"] = function(command) {
+   queue.push(command);
+   if (queue.length === 1) poll();
+  };
+  poll();
+ };
+})();
+
+var moduleOverrides = {};
+
+var key;
+
+for (key in Module) {
+ if (Module.hasOwnProperty(key)) {
+  moduleOverrides[key] = Module[key];
+ }
+}
+
+var arguments_ = [];
+
+var thisProgram = "./this.program";
+
+var quit_ = function(status, toThrow) {
+ throw toThrow;
+};
+
+var ENVIRONMENT_IS_WEB = false;
+
+var ENVIRONMENT_IS_WORKER = false;
+
+var ENVIRONMENT_IS_NODE = false;
+
+var ENVIRONMENT_IS_SHELL = false;
+
+ENVIRONMENT_IS_WEB = typeof window === "object";
+
+ENVIRONMENT_IS_WORKER = typeof importScripts === "function";
+
+ENVIRONMENT_IS_NODE = typeof process === "object" && typeof process.versions === "object" && typeof process.versions.node === "string";
+
+ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIRONMENT_IS_WORKER;
+
+var ENVIRONMENT_IS_PTHREAD = Module["ENVIRONMENT_IS_PTHREAD"] || false;
+
+if (ENVIRONMENT_IS_PTHREAD) {
+ buffer = Module["buffer"];
+}
+
+var scriptDirectory = "";
+
+function locateFile(path) {
+ return scriptDirectory + path;
+}
+
+var read_, readAsync, readBinary, setWindowTitle;
+
+var nodeFS;
+
+var nodePath;
+
+if (ENVIRONMENT_IS_NODE) {
+ if (ENVIRONMENT_IS_WORKER) {
+  scriptDirectory = require("path").dirname(scriptDirectory) + "/";
+ } else {
+  scriptDirectory = __dirname + "/";
+ }
+ read_ = function shell_read(filename, binary) {
+  if (!nodeFS) nodeFS = require("fs");
+  if (!nodePath) nodePath = require("path");
+  filename = nodePath["normalize"](filename);
+  return nodeFS["readFileSync"](filename, binary ? null : "utf8");
+ };
+ readBinary = function readBinary(filename) {
+  var ret = read_(filename, true);
+  if (!ret.buffer) {
+   ret = new Uint8Array(ret);
+  }
+  assert(ret.buffer);
+  return ret;
+ };
+ if (process["argv"].length > 1) {
+  thisProgram = process["argv"][1].replace(/\\/g, "/");
+ }
+ arguments_ = process["argv"].slice(2);
+ process["on"]("uncaughtException", function(ex) {
+  if (!(ex instanceof ExitStatus)) {
+   throw ex;
+  }
+ });
+ process["on"]("unhandledRejection", abort);
+ quit_ = function(status) {
+  process["exit"](status);
+ };
+ Module["inspect"] = function() {
+  return "[Emscripten Module object]";
+ };
+ var nodeWorkerThreads;
+ try {
+  nodeWorkerThreads = require("worker_threads");
+ } catch (e) {
+  console.error('The "worker_threads" module is not supported in this node.js build - perhaps a newer version is needed?');
+  throw e;
+ }
+ global.Worker = nodeWorkerThreads.Worker;
+} else if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
+ if (ENVIRONMENT_IS_WORKER) {
+  scriptDirectory = self.location.href;
+ } else if (typeof document !== "undefined" && document.currentScript) {
+  scriptDirectory = document.currentScript.src;
+ }
+ if (_scriptDir) {
+  scriptDirectory = _scriptDir;
+ }
+ if (scriptDirectory.indexOf("blob:") !== 0) {
+  scriptDirectory = scriptDirectory.substr(0, scriptDirectory.lastIndexOf("/") + 1);
+ } else {
+  scriptDirectory = "";
+ }
+ if (ENVIRONMENT_IS_NODE) {
+  read_ = function shell_read(filename, binary) {
+   if (!nodeFS) nodeFS = require("fs");
+   if (!nodePath) nodePath = require("path");
+   filename = nodePath["normalize"](filename);
+   return nodeFS["readFileSync"](filename, binary ? null : "utf8");
+  };
+  readBinary = function readBinary(filename) {
+   var ret = read_(filename, true);
+   if (!ret.buffer) {
+    ret = new Uint8Array(ret);
+   }
+   assert(ret.buffer);
+   return ret;
+  };
+ } else {
+  read_ = function shell_read(url) {
+   var xhr = new XMLHttpRequest();
+   xhr.open("GET", url, false);
+   xhr.send(null);
+   return xhr.responseText;
+  };
+  if (ENVIRONMENT_IS_WORKER) {
+   readBinary = function readBinary(url) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, false);
+    xhr.responseType = "arraybuffer";
+    xhr.send(null);
+    return new Uint8Array(xhr.response);
+   };
+  }
+  readAsync = function readAsync(url, onload, onerror) {
+   var xhr = new XMLHttpRequest();
+   xhr.open("GET", url, true);
+   xhr.responseType = "arraybuffer";
+   xhr.onload = function xhr_onload() {
+    if (xhr.status == 200 || xhr.status == 0 && xhr.response) {
+     onload(xhr.response);
+     return;
+    }
+    onerror();
+   };
+   xhr.onerror = onerror;
+   xhr.send(null);
+  };
+ }
+ setWindowTitle = function(title) {
+  document.title = title;
+ };
+} else {}
+
+if (ENVIRONMENT_IS_NODE) {
+ if (typeof performance === "undefined") {
+  global.performance = require("perf_hooks").performance;
+ }
+}
+
+var out = Module["print"] || console.log.bind(console);
+
+var err = console.warn.bind(console);
+
+for (key in moduleOverrides) {
+ if (moduleOverrides.hasOwnProperty(key)) {
+  Module[key] = moduleOverrides[key];
+ }
+}
+
+moduleOverrides = null;
+
+function warnOnce(text) {
+ if (!warnOnce.shown) warnOnce.shown = {};
+ if (!warnOnce.shown[text]) {
+  warnOnce.shown[text] = 1;
+  err(text);
+ }
+}
+
+var Atomics_load = Atomics.load;
+
+var Atomics_store = Atomics.store;
+
+var Atomics_compareExchange = Atomics.compareExchange;
+
+var wasmBinary;
+
+var noExitRuntime;
+
+if (typeof WebAssembly !== "object") {
+ abort("no native wasm support detected");
+}
+
+var wasmMemory;
+
+var wasmModule;
+
+var ABORT = false;
+
+var EXITSTATUS;
+
+function assert(condition, text) {
+ if (!condition) {
+  abort("Assertion failed: " + text);
+ }
+}
+
+function getCFunc(ident) {
+ var func = Module["_" + ident];
+ assert(func, "Cannot call unknown function " + ident + ", make sure it is exported");
+ return func;
+}
+
+function ccall(ident, returnType, argTypes, args, opts) {
+ var toC = {
+  "string": function(str) {
+   var ret = 0;
+   if (str !== null && str !== undefined && str !== 0) {
+    var len = (str.length << 2) + 1;
+    ret = stackAlloc(len);
+    stringToUTF8(str, ret, len);
+   }
+   return ret;
+  },
+  "array": function(arr) {
+   var ret = stackAlloc(arr.length);
+   writeArrayToMemory(arr, ret);
+   return ret;
+  }
+ };
+ function convertReturnValue(ret) {
+  if (returnType === "string") return UTF8ToString(ret);
+  if (returnType === "boolean") return Boolean(ret);
+  return ret;
+ }
+ var func = getCFunc(ident);
+ var cArgs = [];
+ var stack = 0;
+ if (args) {
+  for (var i = 0; i < args.length; i++) {
+   var converter = toC[argTypes[i]];
+   if (converter) {
+    if (stack === 0) stack = stackSave();
+    cArgs[i] = converter(args[i]);
+   } else {
+    cArgs[i] = args[i];
+   }
+  }
+ }
+ var ret = func.apply(null, cArgs);
+ ret = convertReturnValue(ret);
+ if (stack !== 0) stackRestore(stack);
+ return ret;
+}
+
+function UTF8ArrayToString(heap, idx, maxBytesToRead) {
+ var endIdx = idx + maxBytesToRead;
+ var str = "";
+ while (!(idx >= endIdx)) {
+  var u0 = heap[idx++];
+  if (!u0) return str;
+  if (!(u0 & 128)) {
+   str += String.fromCharCode(u0);
+   continue;
+  }
+  var u1 = heap[idx++] & 63;
+  if ((u0 & 224) == 192) {
+   str += String.fromCharCode((u0 & 31) << 6 | u1);
+   continue;
+  }
+  var u2 = heap[idx++] & 63;
+  if ((u0 & 240) == 224) {
+   u0 = (u0 & 15) << 12 | u1 << 6 | u2;
+  } else {
+   u0 = (u0 & 7) << 18 | u1 << 12 | u2 << 6 | heap[idx++] & 63;
+  }
+  if (u0 < 65536) {
+   str += String.fromCharCode(u0);
+  } else {
+   var ch = u0 - 65536;
+   str += String.fromCharCode(55296 | ch >> 10, 56320 | ch & 1023);
+  }
+ }
+ return str;
+}
+
+function UTF8ToString(ptr, maxBytesToRead) {
+ return ptr ? UTF8ArrayToString(GROWABLE_HEAP_U8(), ptr, maxBytesToRead) : "";
+}
+
+function stringToUTF8Array(str, heap, outIdx, maxBytesToWrite) {
+ if (!(maxBytesToWrite > 0)) return 0;
+ var startIdx = outIdx;
+ var endIdx = outIdx + maxBytesToWrite - 1;
+ for (var i = 0; i < str.length; ++i) {
+  var u = str.charCodeAt(i);
+  if (u >= 55296 && u <= 57343) {
+   var u1 = str.charCodeAt(++i);
+   u = 65536 + ((u & 1023) << 10) | u1 & 1023;
+  }
+  if (u <= 127) {
+   if (outIdx >= endIdx) break;
+   heap[outIdx++] = u;
+  } else if (u <= 2047) {
+   if (outIdx + 1 >= endIdx) break;
+   heap[outIdx++] = 192 | u >> 6;
+   heap[outIdx++] = 128 | u & 63;
+  } else if (u <= 65535) {
+   if (outIdx + 2 >= endIdx) break;
+   heap[outIdx++] = 224 | u >> 12;
+   heap[outIdx++] = 128 | u >> 6 & 63;
+   heap[outIdx++] = 128 | u & 63;
+  } else {
+   if (outIdx + 3 >= endIdx) break;
+   heap[outIdx++] = 240 | u >> 18;
+   heap[outIdx++] = 128 | u >> 12 & 63;
+   heap[outIdx++] = 128 | u >> 6 & 63;
+   heap[outIdx++] = 128 | u & 63;
+  }
+ }
+ heap[outIdx] = 0;
+ return outIdx - startIdx;
+}
+
+function stringToUTF8(str, outPtr, maxBytesToWrite) {
+ return stringToUTF8Array(str, GROWABLE_HEAP_U8(), outPtr, maxBytesToWrite);
+}
+
+function lengthBytesUTF8(str) {
+ var len = 0;
+ for (var i = 0; i < str.length; ++i) {
+  var u = str.charCodeAt(i);
+  if (u >= 55296 && u <= 57343) u = 65536 + ((u & 1023) << 10) | str.charCodeAt(++i) & 1023;
+  if (u <= 127) ++len; else if (u <= 2047) len += 2; else if (u <= 65535) len += 3; else len += 4;
+ }
+ return len;
+}
+
+function allocateUTF8OnStack(str) {
+ var size = lengthBytesUTF8(str) + 1;
+ var ret = stackAlloc(size);
+ stringToUTF8Array(str, GROWABLE_HEAP_I8(), ret, size);
+ return ret;
+}
+
+function writeArrayToMemory(array, buffer) {
+ GROWABLE_HEAP_I8().set(array, buffer);
+}
+
+function writeAsciiToMemory(str, buffer, dontAddNull) {
+ for (var i = 0; i < str.length; ++i) {
+  GROWABLE_HEAP_I8()[buffer++ >> 0] = str.charCodeAt(i);
+ }
+ if (!dontAddNull) GROWABLE_HEAP_I8()[buffer >> 0] = 0;
+}
+
+function alignUp(x, multiple) {
+ if (x % multiple > 0) {
+  x += multiple - x % multiple;
+ }
+ return x;
+}
+
+var buffer, HEAP8, HEAPU8, HEAP16, HEAPU16, HEAP32, HEAPU32, HEAPF32, HEAPF64;
+
+function updateGlobalBufferAndViews(buf) {
+ buffer = buf;
+ Module["HEAP8"] = HEAP8 = new Int8Array(buf);
+ Module["HEAP16"] = HEAP16 = new Int16Array(buf);
+ Module["HEAP32"] = HEAP32 = new Int32Array(buf);
+ Module["HEAPU8"] = HEAPU8 = new Uint8Array(buf);
+ Module["HEAPU16"] = HEAPU16 = new Uint16Array(buf);
+ Module["HEAPU32"] = HEAPU32 = new Uint32Array(buf);
+ Module["HEAPF32"] = HEAPF32 = new Float32Array(buf);
+ Module["HEAPF64"] = HEAPF64 = new Float64Array(buf);
+}
+
+var INITIAL_MEMORY = 67108864;
+
+if (ENVIRONMENT_IS_PTHREAD) {
+ wasmMemory = Module["wasmMemory"];
+ buffer = Module["buffer"];
+} else {
+ {
+  wasmMemory = new WebAssembly.Memory({
+   "initial": INITIAL_MEMORY / 65536,
+   "maximum": 2147483648 / 65536,
+   "shared": true
+  });
+  if (!(wasmMemory.buffer instanceof SharedArrayBuffer)) {
+   err("requested a shared WebAssembly.Memory but the returned buffer is not a SharedArrayBuffer, indicating that while the browser has SharedArrayBuffer it does not have WebAssembly threads support - you may need to set a flag");
+   if (ENVIRONMENT_IS_NODE) {
+    console.log("(on node you may need: --experimental-wasm-threads --experimental-wasm-bulk-memory and also use a recent version)");
+   }
+   throw Error("bad memory");
+  }
+ }
+}
+
+if (wasmMemory) {
+ buffer = wasmMemory.buffer;
+}
+
+INITIAL_MEMORY = buffer.byteLength;
+
+updateGlobalBufferAndViews(buffer);
+
+var wasmTable;
+
+var __ATPRERUN__ = [];
+
+var __ATINIT__ = [];
+
+var __ATMAIN__ = [];
+
+var __ATEXIT__ = [];
+
+var __ATPOSTRUN__ = [];
+
+var runtimeInitialized = false;
+
+var runtimeExited = false;
+
+if (ENVIRONMENT_IS_PTHREAD) runtimeInitialized = true;
+
+function preRun() {
+ if (ENVIRONMENT_IS_PTHREAD) return;
+ callRuntimeCallbacks(__ATPRERUN__);
+}
+
+function initRuntime() {
+ runtimeInitialized = true;
+ callRuntimeCallbacks(__ATINIT__);
+}
+
+function preMain() {
+ if (ENVIRONMENT_IS_PTHREAD) return;
+ callRuntimeCallbacks(__ATMAIN__);
+}
+
+function exitRuntime() {
+ if (ENVIRONMENT_IS_PTHREAD) return;
+ runtimeExited = true;
+}
+
+function postRun() {
+ if (ENVIRONMENT_IS_PTHREAD) return;
+ if (Module["postRun"]) {
+  if (typeof Module["postRun"] == "function") Module["postRun"] = [ Module["postRun"] ];
+  while (Module["postRun"].length) {
+   addOnPostRun(Module["postRun"].shift());
+  }
+ }
+ callRuntimeCallbacks(__ATPOSTRUN__);
+}
+
+function addOnPostRun(cb) {
+ __ATPOSTRUN__.unshift(cb);
+}
+
+var runDependencies = 0;
+
+var runDependencyWatcher = null;
+
+var dependenciesFulfilled = null;
+
+function addRunDependency(id) {
+ assert(!ENVIRONMENT_IS_PTHREAD, "addRunDependency cannot be used in a pthread worker");
+ runDependencies++;
+}
+
+function removeRunDependency(id) {
+ runDependencies--;
+ if (runDependencies == 0) {
+  if (runDependencyWatcher !== null) {
+   clearInterval(runDependencyWatcher);
+   runDependencyWatcher = null;
+  }
+  if (dependenciesFulfilled) {
+   var callback = dependenciesFulfilled;
+   dependenciesFulfilled = null;
+   callback();
+  }
+ }
+}
+
+Module["preloadedImages"] = {};
+
+Module["preloadedAudios"] = {};
+
+function abort(what) {
+ if (Module["onAbort"]) {
+  Module["onAbort"](what);
+ }
+ if (ENVIRONMENT_IS_PTHREAD) console.error("Pthread aborting at " + new Error().stack);
+ what += "";
+ err(what);
+ ABORT = true;
+ EXITSTATUS = 1;
+ what = "abort(" + what + "). Build with -s ASSERTIONS=1 for more info.";
+ var e = new WebAssembly.RuntimeError(what);
+ readyPromiseReject(e);
+ throw e;
+}
+
+function hasPrefix(str, prefix) {
+ return String.prototype.startsWith ? str.startsWith(prefix) : str.indexOf(prefix) === 0;
+}
+
+var dataURIPrefix = "data:application/octet-stream;base64,";
+
+function isDataURI(filename) {
+ return hasPrefix(filename, dataURIPrefix);
+}
+
+var wasmBinaryFile = "stockfish.wasm";
+
+if (!isDataURI(wasmBinaryFile)) {
+ wasmBinaryFile = locateFile(wasmBinaryFile);
+}
+
+function getBinary(file) {
+ try {
+  if (file == wasmBinaryFile && wasmBinary) {
+   return new Uint8Array(wasmBinary);
+  }
+  if (readBinary) {
+   return readBinary(file);
+  } else {
+   throw "both async and sync fetching of the wasm failed";
+  }
+ } catch (err) {
+  abort(err);
+ }
+}
+
+function getBinaryPromise() {
+ if (!wasmBinary && (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) && typeof fetch === "function") {
+  return fetch(wasmBinaryFile, {
+   credentials: "same-origin"
+  }).then(function(response) {
+   if (!response["ok"]) {
+    throw "failed to load wasm binary file at '" + wasmBinaryFile + "'";
+   }
+   return response["arrayBuffer"]();
+  }).catch(function() {
+   return getBinary(wasmBinaryFile);
+  });
+ }
+ return Promise.resolve().then(function() {
+  return getBinary(wasmBinaryFile);
+ });
+}
+
+function createWasm() {
+ var info = {
+  "a": asmLibraryArg
+ };
+ function receiveInstance(instance, module) {
+  var exports = instance.exports;
+  Module["asm"] = exports;
+  wasmTable = Module["asm"]["F"];
+  wasmModule = module;
+  if (!ENVIRONMENT_IS_PTHREAD) {
+   var numWorkersToLoad = PThread.unusedWorkers.length;
+   PThread.unusedWorkers.forEach(function(w) {
+    PThread.loadWasmModuleToWorker(w, function() {
+     if (!--numWorkersToLoad) removeRunDependency("wasm-instantiate");
+    });
+   });
+  }
+ }
+ if (!ENVIRONMENT_IS_PTHREAD) {
+  addRunDependency("wasm-instantiate");
+ }
+ function receiveInstantiatedSource(output) {
+  receiveInstance(output["instance"], output["module"]);
+ }
+ function instantiateArrayBuffer(receiver) {
+  return getBinaryPromise().then(function(binary) {
+   return WebAssembly.instantiate(binary, info);
+  }).then(receiver, function(reason) {
+   err("failed to asynchronously prepare wasm: " + reason);
+   abort(reason);
+  });
+ }
+ function instantiateAsync() {
+  if (!wasmBinary && typeof WebAssembly.instantiateStreaming === "function" && !isDataURI(wasmBinaryFile) && typeof fetch === "function") {
+   return fetch(wasmBinaryFile, {
+    credentials: "same-origin"
+   }).then(function(response) {
+    var result = WebAssembly.instantiateStreaming(response, info);
+    return result.then(receiveInstantiatedSource, function(reason) {
+     err("wasm streaming compile failed: " + reason);
+     err("falling back to ArrayBuffer instantiation");
+     return instantiateArrayBuffer(receiveInstantiatedSource);
+    });
+   });
+  } else {
+   return instantiateArrayBuffer(receiveInstantiatedSource);
+  }
+ }
+ if (Module["instantiateWasm"]) {
+  try {
+   var exports = Module["instantiateWasm"](info, receiveInstance);
+   return exports;
+  } catch (e) {
+   err("Module.instantiateWasm callback failed with error: " + e);
+   return false;
+  }
+ }
+ instantiateAsync().catch(readyPromiseReject);
+ return {};
+}
+
+var ASM_CONSTS = {
+ 21036504: function() {
+  throw "Canceled!";
+ },
+ 21036775: function($0, $1) {
+  setTimeout(function() {
+   __emscripten_do_dispatch_to_thread($0, $1);
+  }, 0);
+ }
+};
+
+function initPthreadsJS() {
+ PThread.initRuntime();
+}
+
+function callRuntimeCallbacks(callbacks) {
+ while (callbacks.length > 0) {
+  var callback = callbacks.shift();
+  if (typeof callback == "function") {
+   callback(Module);
+   continue;
+  }
+  var func = callback.func;
+  if (typeof func === "number") {
+   if (callback.arg === undefined) {
+    wasmTable.get(func)();
+   } else {
+    wasmTable.get(func)(callback.arg);
+   }
+  } else {
+   func(callback.arg === undefined ? null : callback.arg);
+  }
+ }
+}
+
+var ERRNO_CODES = {
+ EPERM: 63,
+ ENOENT: 44,
+ ESRCH: 71,
+ EINTR: 27,
+ EIO: 29,
+ ENXIO: 60,
+ E2BIG: 1,
+ ENOEXEC: 45,
+ EBADF: 8,
+ ECHILD: 12,
+ EAGAIN: 6,
+ EWOULDBLOCK: 6,
+ ENOMEM: 48,
+ EACCES: 2,
+ EFAULT: 21,
+ ENOTBLK: 105,
+ EBUSY: 10,
+ EEXIST: 20,
+ EXDEV: 75,
+ ENODEV: 43,
+ ENOTDIR: 54,
+ EISDIR: 31,
+ EINVAL: 28,
+ ENFILE: 41,
+ EMFILE: 33,
+ ENOTTY: 59,
+ ETXTBSY: 74,
+ EFBIG: 22,
+ ENOSPC: 51,
+ ESPIPE: 70,
+ EROFS: 69,
+ EMLINK: 34,
+ EPIPE: 64,
+ EDOM: 18,
+ ERANGE: 68,
+ ENOMSG: 49,
+ EIDRM: 24,
+ ECHRNG: 106,
+ EL2NSYNC: 156,
+ EL3HLT: 107,
+ EL3RST: 108,
+ ELNRNG: 109,
+ EUNATCH: 110,
+ ENOCSI: 111,
+ EL2HLT: 112,
+ EDEADLK: 16,
+ ENOLCK: 46,
+ EBADE: 113,
+ EBADR: 114,
+ EXFULL: 115,
+ ENOANO: 104,
+ EBADRQC: 103,
+ EBADSLT: 102,
+ EDEADLOCK: 16,
+ EBFONT: 101,
+ ENOSTR: 100,
+ ENODATA: 116,
+ ETIME: 117,
+ ENOSR: 118,
+ ENONET: 119,
+ ENOPKG: 120,
+ EREMOTE: 121,
+ ENOLINK: 47,
+ EADV: 122,
+ ESRMNT: 123,
+ ECOMM: 124,
+ EPROTO: 65,
+ EMULTIHOP: 36,
+ EDOTDOT: 125,
+ EBADMSG: 9,
+ ENOTUNIQ: 126,
+ EBADFD: 127,
+ EREMCHG: 128,
+ ELIBACC: 129,
+ ELIBBAD: 130,
+ ELIBSCN: 131,
+ ELIBMAX: 132,
+ ELIBEXEC: 133,
+ ENOSYS: 52,
+ ENOTEMPTY: 55,
+ ENAMETOOLONG: 37,
+ ELOOP: 32,
+ EOPNOTSUPP: 138,
+ EPFNOSUPPORT: 139,
+ ECONNRESET: 15,
+ ENOBUFS: 42,
+ EAFNOSUPPORT: 5,
+ EPROTOTYPE: 67,
+ ENOTSOCK: 57,
+ ENOPROTOOPT: 50,
+ ESHUTDOWN: 140,
+ ECONNREFUSED: 14,
+ EADDRINUSE: 3,
+ ECONNABORTED: 13,
+ ENETUNREACH: 40,
+ ENETDOWN: 38,
+ ETIMEDOUT: 73,
+ EHOSTDOWN: 142,
+ EHOSTUNREACH: 23,
+ EINPROGRESS: 26,
+ EALREADY: 7,
+ EDESTADDRREQ: 17,
+ EMSGSIZE: 35,
+ EPROTONOSUPPORT: 66,
+ ESOCKTNOSUPPORT: 137,
+ EADDRNOTAVAIL: 4,
+ ENETRESET: 39,
+ EISCONN: 30,
+ ENOTCONN: 53,
+ ETOOMANYREFS: 141,
+ EUSERS: 136,
+ EDQUOT: 19,
+ ESTALE: 72,
+ ENOTSUP: 138,
+ ENOMEDIUM: 148,
+ EILSEQ: 25,
+ EOVERFLOW: 61,
+ ECANCELED: 11,
+ ENOTRECOVERABLE: 56,
+ EOWNERDEAD: 62,
+ ESTRPIPE: 135
+};
+
+function _emscripten_futex_wake(addr, count) {
+ if (addr <= 0 || addr > GROWABLE_HEAP_I8().length || addr & 3 != 0 || count < 0) return -28;
+ if (count == 0) return 0;
+ if (count >= 2147483647) count = Infinity;
+ var mainThreadWaitAddress = Atomics.load(GROWABLE_HEAP_I32(), __emscripten_main_thread_futex >> 2);
+ var mainThreadWoken = 0;
+ if (mainThreadWaitAddress == addr) {
+  var loadedAddr = Atomics.compareExchange(GROWABLE_HEAP_I32(), __emscripten_main_thread_futex >> 2, mainThreadWaitAddress, 0);
+  if (loadedAddr == mainThreadWaitAddress) {
+   --count;
+   mainThreadWoken = 1;
+   if (count <= 0) return 1;
+  }
+ }
+ var ret = Atomics.notify(GROWABLE_HEAP_I32(), addr >> 2, count);
+ if (ret >= 0) return ret + mainThreadWoken;
+ throw "Atomics.notify returned an unexpected value " + ret;
+}
+
+Module["_emscripten_futex_wake"] = _emscripten_futex_wake;
+
+function killThread(pthread_ptr) {
+ if (ENVIRONMENT_IS_PTHREAD) throw "Internal Error! killThread() can only ever be called from main application thread!";
+ if (!pthread_ptr) throw "Internal Error! Null pthread_ptr in killThread!";
+ GROWABLE_HEAP_I32()[pthread_ptr + 12 >> 2] = 0;
+ var pthread = PThread.pthreads[pthread_ptr];
+ pthread.worker.terminate();
+ PThread.freeThreadData(pthread);
+ PThread.runningWorkers.splice(PThread.runningWorkers.indexOf(pthread.worker), 1);
+ pthread.worker.pthread = undefined;
+}
+
+function cancelThread(pthread_ptr) {
+ if (ENVIRONMENT_IS_PTHREAD) throw "Internal Error! cancelThread() can only ever be called from main application thread!";
+ if (!pthread_ptr) throw "Internal Error! Null pthread_ptr in cancelThread!";
+ var pthread = PThread.pthreads[pthread_ptr];
+ pthread.worker.postMessage({
+  "cmd": "cancel"
+ });
+}
+
+function cleanupThread(pthread_ptr) {
+ if (ENVIRONMENT_IS_PTHREAD) throw "Internal Error! cleanupThread() can only ever be called from main application thread!";
+ if (!pthread_ptr) throw "Internal Error! Null pthread_ptr in cleanupThread!";
+ GROWABLE_HEAP_I32()[pthread_ptr + 12 >> 2] = 0;
+ var pthread = PThread.pthreads[pthread_ptr];
+ if (pthread) {
+  var worker = pthread.worker;
+  PThread.returnWorkerToPool(worker);
+ }
+}
+
+var PThread = {
+ unusedWorkers: [],
+ runningWorkers: [],
+ initMainThreadBlock: function() {
+  var pthreadPoolSize = 1;
+  for (var i = 0; i < pthreadPoolSize; ++i) {
+   PThread.allocateUnusedWorker();
+  }
+ },
+ initRuntime: function() {
+  var tb = _malloc(228);
+  for (var i = 0; i < 228 / 4; ++i) GROWABLE_HEAP_U32()[tb / 4 + i] = 0;
+  GROWABLE_HEAP_I32()[tb + 12 >> 2] = tb;
+  var headPtr = tb + 152;
+  GROWABLE_HEAP_I32()[headPtr >> 2] = headPtr;
+  var tlsMemory = _malloc(512);
+  for (var i = 0; i < 128; ++i) GROWABLE_HEAP_U32()[tlsMemory / 4 + i] = 0;
+  Atomics.store(GROWABLE_HEAP_U32(), tb + 100 >> 2, tlsMemory);
+  Atomics.store(GROWABLE_HEAP_U32(), tb + 40 >> 2, tb);
+  __emscripten_thread_init(tb, !ENVIRONMENT_IS_WORKER, 1);
+  _emscripten_register_main_browser_thread_id(tb);
+ },
+ initWorker: function() {
+  readyPromiseResolve(Module);
+ },
+ pthreads: {},
+ threadExitHandlers: [],
+ setThreadStatus: function() {},
+ runExitHandlers: function() {
+  while (PThread.threadExitHandlers.length > 0) {
+   PThread.threadExitHandlers.pop()();
+  }
+  if (ENVIRONMENT_IS_PTHREAD && _pthread_self()) ___pthread_tsd_run_dtors();
+ },
+ threadExit: function(exitCode) {
+  var tb = _pthread_self();
+  if (tb) {
+   Atomics.store(GROWABLE_HEAP_U32(), tb + 4 >> 2, exitCode);
+   Atomics.store(GROWABLE_HEAP_U32(), tb + 0 >> 2, 1);
+   Atomics.store(GROWABLE_HEAP_U32(), tb + 56 >> 2, 1);
+   Atomics.store(GROWABLE_HEAP_U32(), tb + 60 >> 2, 0);
+   PThread.runExitHandlers();
+   _emscripten_futex_wake(tb + 0, 2147483647);
+   __emscripten_thread_init(0, 0, 0);
+   if (ENVIRONMENT_IS_PTHREAD) {
+    postMessage({
+     "cmd": "exit"
+    });
+   }
+  }
+ },
+ threadCancel: function() {
+  PThread.runExitHandlers();
+  var tb = _pthread_self();
+  Atomics.store(GROWABLE_HEAP_U32(), tb + 4 >> 2, -1);
+  Atomics.store(GROWABLE_HEAP_U32(), tb + 0 >> 2, 1);
+  _emscripten_futex_wake(tb + 0, 2147483647);
+  __emscripten_thread_init(0, 0, 0);
+  postMessage({
+   "cmd": "cancelDone"
+  });
+ },
+ terminateAllThreads: function() {
+  for (var t in PThread.pthreads) {
+   var pthread = PThread.pthreads[t];
+   if (pthread && pthread.worker) {
+    PThread.returnWorkerToPool(pthread.worker);
+   }
+  }
+  PThread.pthreads = {};
+  for (var i = 0; i < PThread.unusedWorkers.length; ++i) {
+   var worker = PThread.unusedWorkers[i];
+   worker.terminate();
+  }
+  PThread.unusedWorkers = [];
+  for (var i = 0; i < PThread.runningWorkers.length; ++i) {
+   var worker = PThread.runningWorkers[i];
+   var pthread = worker.pthread;
+   PThread.freeThreadData(pthread);
+   worker.terminate();
+  }
+  PThread.runningWorkers = [];
+ },
+ freeThreadData: function(pthread) {
+  if (!pthread) return;
+  if (pthread.threadInfoStruct) {
+   var tlsMemory = GROWABLE_HEAP_I32()[pthread.threadInfoStruct + 100 >> 2];
+   GROWABLE_HEAP_I32()[pthread.threadInfoStruct + 100 >> 2] = 0;
+   _free(tlsMemory);
+   _free(pthread.threadInfoStruct);
+  }
+  pthread.threadInfoStruct = 0;
+  if (pthread.allocatedOwnStack && pthread.stackBase) _free(pthread.stackBase);
+  pthread.stackBase = 0;
+  if (pthread.worker) pthread.worker.pthread = null;
+ },
+ returnWorkerToPool: function(worker) {
+  delete PThread.pthreads[worker.pthread.thread];
+  PThread.unusedWorkers.push(worker);
+  PThread.runningWorkers.splice(PThread.runningWorkers.indexOf(worker), 1);
+  PThread.freeThreadData(worker.pthread);
+  worker.pthread = undefined;
+ },
+ receiveObjectTransfer: function(data) {},
+ loadWasmModuleToWorker: function(worker, onFinishedLoading) {
+  worker.onmessage = function(e) {
+   var d = e["data"];
+   var cmd = d["cmd"];
+   if (worker.pthread) PThread.currentProxiedOperationCallerThread = worker.pthread.threadInfoStruct;
+   if (d["targetThread"] && d["targetThread"] != _pthread_self()) {
+    var thread = PThread.pthreads[d.targetThread];
+    if (thread) {
+     thread.worker.postMessage(e.data, d["transferList"]);
+    } else {
+     console.error('Internal error! Worker sent a message "' + cmd + '" to target pthread ' + d["targetThread"] + ", but that thread no longer exists!");
+    }
+    PThread.currentProxiedOperationCallerThread = undefined;
+    return;
+   }
+   if (cmd === "processQueuedMainThreadWork") {
+    _emscripten_main_thread_process_queued_calls();
+   } else if (cmd === "spawnThread") {
+    spawnThread(e.data);
+   } else if (cmd === "cleanupThread") {
+    cleanupThread(d["thread"]);
+   } else if (cmd === "killThread") {
+    killThread(d["thread"]);
+   } else if (cmd === "cancelThread") {
+    cancelThread(d["thread"]);
+   } else if (cmd === "loaded") {
+    worker.loaded = true;
+    if (onFinishedLoading) onFinishedLoading(worker);
+    if (worker.runPthread) {
+     worker.runPthread();
+     delete worker.runPthread;
+    }
+   } else if (cmd === "print") {
+    out("Thread " + d["threadId"] + ": " + d["text"]);
+   } else if (cmd === "printErr") {
+    err("Thread " + d["threadId"] + ": " + d["text"]);
+   } else if (cmd === "alert") {
+    alert("Thread " + d["threadId"] + ": " + d["text"]);
+   } else if (cmd === "exit") {
+    var detached = worker.pthread && Atomics.load(GROWABLE_HEAP_U32(), worker.pthread.thread + 64 >> 2);
+    if (detached) {
+     PThread.returnWorkerToPool(worker);
+    }
+   } else if (cmd === "exitProcess") {
+    try {
+     exit(d["returnCode"]);
+    } catch (e) {
+     if (e instanceof ExitStatus) return;
+     throw e;
+    }
+   } else if (cmd === "cancelDone") {
+    PThread.returnWorkerToPool(worker);
+   } else if (cmd === "objectTransfer") {
+    PThread.receiveObjectTransfer(e.data);
+   } else if (e.data.target === "setimmediate") {
+    worker.postMessage(e.data);
+   } else {
+    err("worker sent an unknown command " + cmd);
+   }
+   PThread.currentProxiedOperationCallerThread = undefined;
+  };
+  worker.onerror = function(e) {
+   err("pthread sent an error! " + e.filename + ":" + e.lineno + ": " + e.message);
+  };
+  if (ENVIRONMENT_IS_NODE) {
+   worker.on("message", function(data) {
+    worker.onmessage({
+     data: data
+    });
+   });
+   worker.on("error", function(data) {
+    worker.onerror(data);
+   });
+   worker.on("exit", function(data) {});
+  }
+  worker.postMessage({
+   "cmd": "load",
+   "urlOrBlob": Module["mainScriptUrlOrBlob"] || _scriptDir,
+   "wasmMemory": wasmMemory,
+   "wasmModule": wasmModule
+  });
+ },
+ allocateUnusedWorker: function() {
+  var pthreadMainJs = locateFile("stockfish.worker.js");
+  PThread.unusedWorkers.push(new Worker(pthreadMainJs));
+ },
+ getNewWorker: function() {
+  if (PThread.unusedWorkers.length == 0) {
+   PThread.allocateUnusedWorker();
+   PThread.loadWasmModuleToWorker(PThread.unusedWorkers[0]);
+  }
+  if (PThread.unusedWorkers.length > 0) return PThread.unusedWorkers.pop(); else return null;
+ },
+ busySpinWait: function(msecs) {
+  var t = performance.now() + msecs;
+  while (performance.now() < t) {}
+ }
+};
+
+function establishStackSpace(stackTop, stackMax) {
+ _emscripten_stack_set_limits(stackTop, stackMax);
+ stackRestore(stackTop);
+}
+
+Module["establishStackSpace"] = establishStackSpace;
+
+function getNoExitRuntime() {
+ return noExitRuntime;
+}
+
+Module["getNoExitRuntime"] = getNoExitRuntime;
+
+function invokeEntryPoint(ptr, arg) {
+ return wasmTable.get(ptr)(arg);
+}
+
+Module["invokeEntryPoint"] = invokeEntryPoint;
+
+function ___assert_fail(condition, filename, line, func) {
+ abort("Assertion failed: " + UTF8ToString(condition) + ", at: " + [ filename ? UTF8ToString(filename) : "unknown filename", line, func ? UTF8ToString(func) : "unknown function" ]);
+}
+
+var _emscripten_get_now;
+
+if (ENVIRONMENT_IS_NODE) {
+ _emscripten_get_now = function() {
+  var t = process["hrtime"]();
+  return t[0] * 1e3 + t[1] / 1e6;
+ };
+} else if (ENVIRONMENT_IS_PTHREAD) {
+ _emscripten_get_now = function() {
+  return performance.now() - Module["__performance_now_clock_drift"];
+ };
+} else _emscripten_get_now = function() {
+ return performance.now();
+};
+
+var _emscripten_get_now_is_monotonic = true;
+
+function setErrNo(value) {
+ GROWABLE_HEAP_I32()[___errno_location() >> 2] = value;
+ return value;
+}
+
+function _clock_gettime(clk_id, tp) {
+ var now;
+ if (clk_id === 0) {
+  now = Date.now();
+ } else if ((clk_id === 1 || clk_id === 4) && _emscripten_get_now_is_monotonic) {
+  now = _emscripten_get_now();
+ } else {
+  setErrNo(28);
+  return -1;
+ }
+ GROWABLE_HEAP_I32()[tp >> 2] = now / 1e3 | 0;
+ GROWABLE_HEAP_I32()[tp + 4 >> 2] = now % 1e3 * 1e3 * 1e3 | 0;
+ return 0;
+}
+
+function _atexit(func, arg) {
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(1, 1, func, arg);
+}
+
+var SYSCALLS = {
+ mappings: {},
+ buffers: [ null, [], [] ],
+ printChar: function(stream, curr) {
+  var buffer = SYSCALLS.buffers[stream];
+  if (curr === 0 || curr === 10) {
+   (stream === 1 ? out : err)(UTF8ArrayToString(buffer, 0));
+   buffer.length = 0;
+  } else {
+   buffer.push(curr);
+  }
+ },
+ varargs: undefined,
+ get: function() {
+  SYSCALLS.varargs += 4;
+  var ret = GROWABLE_HEAP_I32()[SYSCALLS.varargs - 4 >> 2];
+  return ret;
+ },
+ getStr: function(ptr) {
+  var ret = UTF8ToString(ptr);
+  return ret;
+ },
+ get64: function(low, high) {
+  return low;
+ }
+};
+
+function ___sys_fcntl64(fd, cmd, varargs) {
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(2, 1, fd, cmd, varargs);
+ SYSCALLS.varargs = varargs;
+ return 0;
+}
+
+function ___sys_ioctl(fd, op, varargs) {
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(3, 1, fd, op, varargs);
+ SYSCALLS.varargs = varargs;
+ return 0;
+}
+
+function ___sys_open(path, flags, varargs) {
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(4, 1, path, flags, varargs);
+ SYSCALLS.varargs = varargs;
+}
+
+function __emscripten_notify_thread_queue(targetThreadId, mainThreadId) {
+ if (targetThreadId == mainThreadId) {
+  postMessage({
+   "cmd": "processQueuedMainThreadWork"
+  });
+ } else if (ENVIRONMENT_IS_PTHREAD) {
+  postMessage({
+   "targetThread": targetThreadId,
+   "cmd": "processThreadQueue"
+  });
+ } else {
+  var pthread = PThread.pthreads[targetThreadId];
+  var worker = pthread && pthread.worker;
+  if (!worker) {
+   return;
+  }
+  worker.postMessage({
+   "cmd": "processThreadQueue"
+  });
+ }
+ return 1;
+}
+
+function _abort() {
+ abort();
+}
+
+function _emscripten_asm_const_int(code, sigPtr, argbuf) {
+ var args = readAsmConstArgs(sigPtr, argbuf);
+ return ASM_CONSTS[code].apply(null, args);
+}
+
+function _emscripten_check_blocking_allowed() {
+ if (ENVIRONMENT_IS_NODE) return;
+ if (ENVIRONMENT_IS_WORKER) return;
+ warnOnce("Blocking on the main thread is very dangerous, see https://emscripten.org/docs/porting/pthreads.html#blocking-on-the-main-browser-thread");
+}
+
+function _emscripten_conditional_set_current_thread_status(expectedStatus, newStatus) {}
+
+function _emscripten_futex_wait(addr, val, timeout) {
+ if (addr <= 0 || addr > GROWABLE_HEAP_I8().length || addr & 3 != 0) return -28;
+ if (!ENVIRONMENT_IS_WEB) {
+  var ret = Atomics.wait(GROWABLE_HEAP_I32(), addr >> 2, val, timeout);
+  if (ret === "timed-out") return -73;
+  if (ret === "not-equal") return -6;
+  if (ret === "ok") return 0;
+  throw "Atomics.wait returned an unexpected value " + ret;
+ } else {
+  if (Atomics.load(GROWABLE_HEAP_I32(), addr >> 2) != val) {
+   return -6;
+  }
+  var tNow = performance.now();
+  var tEnd = tNow + timeout;
+  var lastAddr = Atomics.exchange(GROWABLE_HEAP_I32(), __emscripten_main_thread_futex >> 2, addr);
+  while (1) {
+   tNow = performance.now();
+   if (tNow > tEnd) {
+    lastAddr = Atomics.exchange(GROWABLE_HEAP_I32(), __emscripten_main_thread_futex >> 2, 0);
+    return -73;
+   }
+   lastAddr = Atomics.exchange(GROWABLE_HEAP_I32(), __emscripten_main_thread_futex >> 2, 0);
+   if (lastAddr == 0) {
+    break;
+   }
+   _emscripten_main_thread_process_queued_calls();
+   if (Atomics.load(GROWABLE_HEAP_I32(), addr >> 2) != val) {
+    return -6;
+   }
+   lastAddr = Atomics.exchange(GROWABLE_HEAP_I32(), __emscripten_main_thread_futex >> 2, addr);
+  }
+  return 0;
+ }
+}
+
+function _emscripten_memcpy_big(dest, src, num) {
+ GROWABLE_HEAP_U8().copyWithin(dest, src, src + num);
+}
+
+function _emscripten_proxy_to_main_thread_js(index, sync) {
+ var numCallArgs = arguments.length - 2;
+ var stack = stackSave();
+ var serializedNumCallArgs = numCallArgs;
+ var args = stackAlloc(serializedNumCallArgs * 8);
+ var b = args >> 3;
+ for (var i = 0; i < numCallArgs; i++) {
+  var arg = arguments[2 + i];
+  GROWABLE_HEAP_F64()[b + i] = arg;
+ }
+ var ret = _emscripten_run_in_main_runtime_thread_js(index, serializedNumCallArgs, args, sync);
+ stackRestore(stack);
+ return ret;
+}
+
+var _emscripten_receive_on_main_thread_js_callArgs = [];
+
+var readAsmConstArgsArray = [];
+
+function readAsmConstArgs(sigPtr, buf) {
+ readAsmConstArgsArray.length = 0;
+ var ch;
+ buf >>= 2;
+ while (ch = GROWABLE_HEAP_U8()[sigPtr++]) {
+  var double = ch < 105;
+  if (double && buf & 1) buf++;
+  readAsmConstArgsArray.push(double ? GROWABLE_HEAP_F64()[buf++ >> 1] : GROWABLE_HEAP_I32()[buf]);
+  ++buf;
+ }
+ return readAsmConstArgsArray;
+}
+
+function _emscripten_receive_on_main_thread_js(index, numCallArgs, args) {
+ _emscripten_receive_on_main_thread_js_callArgs.length = numCallArgs;
+ var b = args >> 3;
+ for (var i = 0; i < numCallArgs; i++) {
+  _emscripten_receive_on_main_thread_js_callArgs[i] = GROWABLE_HEAP_F64()[b + i];
+ }
+ var isEmAsmConst = index < 0;
+ var func = !isEmAsmConst ? proxiedFunctionTable[index] : ASM_CONSTS[-index - 1];
+ return func.apply(null, _emscripten_receive_on_main_thread_js_callArgs);
+}
+
+function _emscripten_get_heap_size() {
+ return GROWABLE_HEAP_U8().length;
+}
+
+function emscripten_realloc_buffer(size) {
+ try {
+  wasmMemory.grow(size - buffer.byteLength + 65535 >>> 16);
+  updateGlobalBufferAndViews(wasmMemory.buffer);
+  return 1;
+ } catch (e) {}
+}
+
+function _emscripten_resize_heap(requestedSize) {
+ requestedSize = requestedSize >>> 0;
+ var oldSize = _emscripten_get_heap_size();
+ if (requestedSize <= oldSize) {
+  return false;
+ }
+ var maxHeapSize = 2147483648;
+ if (requestedSize > maxHeapSize) {
+  return false;
+ }
+ var minHeapSize = 16777216;
+ for (var cutDown = 1; cutDown <= 4; cutDown *= 2) {
+  var overGrownHeapSize = oldSize * (1 + .2 / cutDown);
+  overGrownHeapSize = Math.min(overGrownHeapSize, requestedSize + 100663296);
+  var newSize = Math.min(maxHeapSize, alignUp(Math.max(minHeapSize, requestedSize, overGrownHeapSize), 65536));
+  var replacement = emscripten_realloc_buffer(newSize);
+  if (replacement) {
+   return true;
+  }
+ }
+ return false;
+}
+
+var JSEvents = {
+ inEventHandler: 0,
+ removeAllEventListeners: function() {
+  for (var i = JSEvents.eventHandlers.length - 1; i >= 0; --i) {
+   JSEvents._removeHandler(i);
+  }
+  JSEvents.eventHandlers = [];
+  JSEvents.deferredCalls = [];
+ },
+ registerRemoveEventListeners: function() {
+  if (!JSEvents.removeEventListenersRegistered) {
+   __ATEXIT__.push(JSEvents.removeAllEventListeners);
+   JSEvents.removeEventListenersRegistered = true;
+  }
+ },
+ deferredCalls: [],
+ deferCall: function(targetFunction, precedence, argsList) {
+  function arraysHaveEqualContent(arrA, arrB) {
+   if (arrA.length != arrB.length) return false;
+   for (var i in arrA) {
+    if (arrA[i] != arrB[i]) return false;
+   }
+   return true;
+  }
+  for (var i in JSEvents.deferredCalls) {
+   var call = JSEvents.deferredCalls[i];
+   if (call.targetFunction == targetFunction && arraysHaveEqualContent(call.argsList, argsList)) {
+    return;
+   }
+  }
+  JSEvents.deferredCalls.push({
+   targetFunction: targetFunction,
+   precedence: precedence,
+   argsList: argsList
+  });
+  JSEvents.deferredCalls.sort(function(x, y) {
+   return x.precedence < y.precedence;
+  });
+ },
+ removeDeferredCalls: function(targetFunction) {
+  for (var i = 0; i < JSEvents.deferredCalls.length; ++i) {
+   if (JSEvents.deferredCalls[i].targetFunction == targetFunction) {
+    JSEvents.deferredCalls.splice(i, 1);
+    --i;
+   }
+  }
+ },
+ canPerformEventHandlerRequests: function() {
+  return JSEvents.inEventHandler && JSEvents.currentEventHandler.allowsDeferredCalls;
+ },
+ runDeferredCalls: function() {
+  if (!JSEvents.canPerformEventHandlerRequests()) {
+   return;
+  }
+  for (var i = 0; i < JSEvents.deferredCalls.length; ++i) {
+   var call = JSEvents.deferredCalls[i];
+   JSEvents.deferredCalls.splice(i, 1);
+   --i;
+   call.targetFunction.apply(null, call.argsList);
+  }
+ },
+ eventHandlers: [],
+ removeAllHandlersOnTarget: function(target, eventTypeString) {
+  for (var i = 0; i < JSEvents.eventHandlers.length; ++i) {
+   if (JSEvents.eventHandlers[i].target == target && (!eventTypeString || eventTypeString == JSEvents.eventHandlers[i].eventTypeString)) {
+    JSEvents._removeHandler(i--);
+   }
+  }
+ },
+ _removeHandler: function(i) {
+  var h = JSEvents.eventHandlers[i];
+  h.target.removeEventListener(h.eventTypeString, h.eventListenerFunc, h.useCapture);
+  JSEvents.eventHandlers.splice(i, 1);
+ },
+ registerOrRemoveHandler: function(eventHandler) {
+  var jsEventHandler = function jsEventHandler(event) {
+   ++JSEvents.inEventHandler;
+   JSEvents.currentEventHandler = eventHandler;
+   JSEvents.runDeferredCalls();
+   eventHandler.handlerFunc(event);
+   JSEvents.runDeferredCalls();
+   --JSEvents.inEventHandler;
+  };
+  if (eventHandler.callbackfunc) {
+   eventHandler.eventListenerFunc = jsEventHandler;
+   eventHandler.target.addEventListener(eventHandler.eventTypeString, jsEventHandler, eventHandler.useCapture);
+   JSEvents.eventHandlers.push(eventHandler);
+   JSEvents.registerRemoveEventListeners();
+  } else {
+   for (var i = 0; i < JSEvents.eventHandlers.length; ++i) {
+    if (JSEvents.eventHandlers[i].target == eventHandler.target && JSEvents.eventHandlers[i].eventTypeString == eventHandler.eventTypeString) {
+     JSEvents._removeHandler(i--);
+    }
+   }
+  }
+ },
+ queueEventHandlerOnThread_iiii: function(targetThread, eventHandlerFunc, eventTypeId, eventData, userData) {
+  var stackTop = stackSave();
+  var varargs = stackAlloc(12);
+  GROWABLE_HEAP_I32()[varargs >> 2] = eventTypeId;
+  GROWABLE_HEAP_I32()[varargs + 4 >> 2] = eventData;
+  GROWABLE_HEAP_I32()[varargs + 8 >> 2] = userData;
+  __emscripten_call_on_thread(0, targetThread, 637534208, eventHandlerFunc, eventData, varargs);
+  stackRestore(stackTop);
+ },
+ getTargetThreadForEventCallback: function(targetThread) {
+  switch (targetThread) {
+  case 1:
+   return 0;
+
+  case 2:
+   return PThread.currentProxiedOperationCallerThread;
+
+  default:
+   return targetThread;
+  }
+ },
+ getNodeNameForTarget: function(target) {
+  if (!target) return "";
+  if (target == window) return "#window";
+  if (target == screen) return "#screen";
+  return target && target.nodeName ? target.nodeName : "";
+ },
+ fullscreenEnabled: function() {
+  return document.fullscreenEnabled || document.webkitFullscreenEnabled;
+ }
+};
+
+function stringToNewUTF8(jsString) {
+ var length = lengthBytesUTF8(jsString) + 1;
+ var cString = _malloc(length);
+ stringToUTF8(jsString, cString, length);
+ return cString;
+}
+
+function _emscripten_set_offscreencanvas_size_on_target_thread_js(targetThread, targetCanvas, width, height) {
+ var stackTop = stackSave();
+ var varargs = stackAlloc(12);
+ var targetCanvasPtr = 0;
+ if (targetCanvas) {
+  targetCanvasPtr = stringToNewUTF8(targetCanvas);
+ }
+ GROWABLE_HEAP_I32()[varargs >> 2] = targetCanvasPtr;
+ GROWABLE_HEAP_I32()[varargs + 4 >> 2] = width;
+ GROWABLE_HEAP_I32()[varargs + 8 >> 2] = height;
+ __emscripten_call_on_thread(0, targetThread, 657457152, 0, targetCanvasPtr, varargs);
+ stackRestore(stackTop);
+}
+
+function _emscripten_set_offscreencanvas_size_on_target_thread(targetThread, targetCanvas, width, height) {
+ targetCanvas = targetCanvas ? UTF8ToString(targetCanvas) : "";
+ _emscripten_set_offscreencanvas_size_on_target_thread_js(targetThread, targetCanvas, width, height);
+}
+
+function maybeCStringToJsString(cString) {
+ return cString > 2 ? UTF8ToString(cString) : cString;
+}
+
+var specialHTMLTargets = [ 0, typeof document !== "undefined" ? document : 0, typeof window !== "undefined" ? window : 0 ];
+
+function findEventTarget(target) {
+ target = maybeCStringToJsString(target);
+ var domElement = specialHTMLTargets[target] || (typeof document !== "undefined" ? document.querySelector(target) : undefined);
+ return domElement;
+}
+
+function findCanvasEventTarget(target) {
+ return findEventTarget(target);
+}
+
+function _emscripten_set_canvas_element_size_calling_thread(target, width, height) {
+ var canvas = findCanvasEventTarget(target);
+ if (!canvas) return -4;
+ if (canvas.canvasSharedPtr) {
+  GROWABLE_HEAP_I32()[canvas.canvasSharedPtr >> 2] = width;
+  GROWABLE_HEAP_I32()[canvas.canvasSharedPtr + 4 >> 2] = height;
+ }
+ if (canvas.offscreenCanvas || !canvas.controlTransferredOffscreen) {
+  if (canvas.offscreenCanvas) canvas = canvas.offscreenCanvas;
+  var autoResizeViewport = false;
+  if (canvas.GLctxObject && canvas.GLctxObject.GLctx) {
+   var prevViewport = canvas.GLctxObject.GLctx.getParameter(2978);
+   autoResizeViewport = prevViewport[0] === 0 && prevViewport[1] === 0 && prevViewport[2] === canvas.width && prevViewport[3] === canvas.height;
+  }
+  canvas.width = width;
+  canvas.height = height;
+  if (autoResizeViewport) {
+   canvas.GLctxObject.GLctx.viewport(0, 0, width, height);
+  }
+ } else if (canvas.canvasSharedPtr) {
+  var targetThread = GROWABLE_HEAP_I32()[canvas.canvasSharedPtr + 8 >> 2];
+  _emscripten_set_offscreencanvas_size_on_target_thread(targetThread, target, width, height);
+  return 1;
+ } else {
+  return -4;
+ }
+ return 0;
+}
+
+function _emscripten_set_canvas_element_size_main_thread(target, width, height) {
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(5, 1, target, width, height);
+ return _emscripten_set_canvas_element_size_calling_thread(target, width, height);
+}
+
+function _emscripten_set_canvas_element_size(target, width, height) {
+ var canvas = findCanvasEventTarget(target);
+ if (canvas) {
+  return _emscripten_set_canvas_element_size_calling_thread(target, width, height);
+ } else {
+  return _emscripten_set_canvas_element_size_main_thread(target, width, height);
+ }
+}
+
+function _emscripten_set_current_thread_status(newStatus) {}
+
+function __webgl_enable_ANGLE_instanced_arrays(ctx) {
+ var ext = ctx.getExtension("ANGLE_instanced_arrays");
+ if (ext) {
+  ctx["vertexAttribDivisor"] = function(index, divisor) {
+   ext["vertexAttribDivisorANGLE"](index, divisor);
+  };
+  ctx["drawArraysInstanced"] = function(mode, first, count, primcount) {
+   ext["drawArraysInstancedANGLE"](mode, first, count, primcount);
+  };
+  ctx["drawElementsInstanced"] = function(mode, count, type, indices, primcount) {
+   ext["drawElementsInstancedANGLE"](mode, count, type, indices, primcount);
+  };
+  return 1;
+ }
+}
+
+function __webgl_enable_OES_vertex_array_object(ctx) {
+ var ext = ctx.getExtension("OES_vertex_array_object");
+ if (ext) {
+  ctx["createVertexArray"] = function() {
+   return ext["createVertexArrayOES"]();
+  };
+  ctx["deleteVertexArray"] = function(vao) {
+   ext["deleteVertexArrayOES"](vao);
+  };
+  ctx["bindVertexArray"] = function(vao) {
+   ext["bindVertexArrayOES"](vao);
+  };
+  ctx["isVertexArray"] = function(vao) {
+   return ext["isVertexArrayOES"](vao);
+  };
+  return 1;
+ }
+}
+
+function __webgl_enable_WEBGL_draw_buffers(ctx) {
+ var ext = ctx.getExtension("WEBGL_draw_buffers");
+ if (ext) {
+  ctx["drawBuffers"] = function(n, bufs) {
+   ext["drawBuffersWEBGL"](n, bufs);
+  };
+  return 1;
+ }
+}
+
+function __webgl_enable_WEBGL_multi_draw(ctx) {
+ return !!(ctx.multiDrawWebgl = ctx.getExtension("WEBGL_multi_draw"));
+}
+
+var GL = {
+ counter: 1,
+ buffers: [],
+ programs: [],
+ framebuffers: [],
+ renderbuffers: [],
+ textures: [],
+ uniforms: [],
+ shaders: [],
+ vaos: [],
+ contexts: {},
+ offscreenCanvases: {},
+ timerQueriesEXT: [],
+ programInfos: {},
+ stringCache: {},
+ unpackAlignment: 4,
+ recordError: function recordError(errorCode) {
+  if (!GL.lastError) {
+   GL.lastError = errorCode;
+  }
+ },
+ getNewId: function(table) {
+  var ret = GL.counter++;
+  for (var i = table.length; i < ret; i++) {
+   table[i] = null;
+  }
+  return ret;
+ },
+ getSource: function(shader, count, string, length) {
+  var source = "";
+  for (var i = 0; i < count; ++i) {
+   var len = length ? GROWABLE_HEAP_I32()[length + i * 4 >> 2] : -1;
+   source += UTF8ToString(GROWABLE_HEAP_I32()[string + i * 4 >> 2], len < 0 ? undefined : len);
+  }
+  return source;
+ },
+ createContext: function(canvas, webGLContextAttributes) {
+  var ctx = canvas.getContext("webgl", webGLContextAttributes);
+  if (!ctx) return 0;
+  var handle = GL.registerContext(ctx, webGLContextAttributes);
+  return handle;
+ },
+ registerContext: function(ctx, webGLContextAttributes) {
+  var handle = _malloc(8);
+  GROWABLE_HEAP_I32()[handle + 4 >> 2] = _pthread_self();
+  var context = {
+   handle: handle,
+   attributes: webGLContextAttributes,
+   version: webGLContextAttributes.majorVersion,
+   GLctx: ctx
+  };
+  if (ctx.canvas) ctx.canvas.GLctxObject = context;
+  GL.contexts[handle] = context;
+  if (typeof webGLContextAttributes.enableExtensionsByDefault === "undefined" || webGLContextAttributes.enableExtensionsByDefault) {
+   GL.initExtensions(context);
+  }
+  return handle;
+ },
+ makeContextCurrent: function(contextHandle) {
+  GL.currentContext = GL.contexts[contextHandle];
+  Module.ctx = GLctx = GL.currentContext && GL.currentContext.GLctx;
+  return !(contextHandle && !GLctx);
+ },
+ getContext: function(contextHandle) {
+  return GL.contexts[contextHandle];
+ },
+ deleteContext: function(contextHandle) {
+  if (GL.currentContext === GL.contexts[contextHandle]) GL.currentContext = null;
+  if (typeof JSEvents === "object") JSEvents.removeAllHandlersOnTarget(GL.contexts[contextHandle].GLctx.canvas);
+  if (GL.contexts[contextHandle] && GL.contexts[contextHandle].GLctx.canvas) GL.contexts[contextHandle].GLctx.canvas.GLctxObject = undefined;
+  _free(GL.contexts[contextHandle].handle);
+  GL.contexts[contextHandle] = null;
+ },
+ initExtensions: function(context) {
+  if (!context) context = GL.currentContext;
+  if (context.initExtensionsDone) return;
+  context.initExtensionsDone = true;
+  var GLctx = context.GLctx;
+  __webgl_enable_ANGLE_instanced_arrays(GLctx);
+  __webgl_enable_OES_vertex_array_object(GLctx);
+  __webgl_enable_WEBGL_draw_buffers(GLctx);
+  GLctx.disjointTimerQueryExt = GLctx.getExtension("EXT_disjoint_timer_query");
+  __webgl_enable_WEBGL_multi_draw(GLctx);
+  var exts = GLctx.getSupportedExtensions() || [];
+  exts.forEach(function(ext) {
+   if (ext.indexOf("lose_context") < 0 && ext.indexOf("debug") < 0) {
+    GLctx.getExtension(ext);
+   }
+  });
+ },
+ populateUniformTable: function(program) {
+  var p = GL.programs[program];
+  var ptable = GL.programInfos[program] = {
+   uniforms: {},
+   maxUniformLength: 0,
+   maxAttributeLength: -1,
+   maxUniformBlockNameLength: -1
+  };
+  var utable = ptable.uniforms;
+  var numUniforms = GLctx.getProgramParameter(p, 35718);
+  for (var i = 0; i < numUniforms; ++i) {
+   var u = GLctx.getActiveUniform(p, i);
+   var name = u.name;
+   ptable.maxUniformLength = Math.max(ptable.maxUniformLength, name.length + 1);
+   if (name.slice(-1) == "]") {
+    name = name.slice(0, name.lastIndexOf("["));
+   }
+   var loc = GLctx.getUniformLocation(p, name);
+   if (loc) {
+    var id = GL.getNewId(GL.uniforms);
+    utable[name] = [ u.size, id ];
+    GL.uniforms[id] = loc;
+    for (var j = 1; j < u.size; ++j) {
+     var n = name + "[" + j + "]";
+     loc = GLctx.getUniformLocation(p, n);
+     id = GL.getNewId(GL.uniforms);
+     GL.uniforms[id] = loc;
+    }
+   }
+  }
+ }
+};
+
+var __emscripten_webgl_power_preferences = [ "default", "low-power", "high-performance" ];
+
+function _emscripten_webgl_do_create_context(target, attributes) {
+ var a = attributes >> 2;
+ var powerPreference = GROWABLE_HEAP_I32()[a + (24 >> 2)];
+ var contextAttributes = {
+  "alpha": !!GROWABLE_HEAP_I32()[a + (0 >> 2)],
+  "depth": !!GROWABLE_HEAP_I32()[a + (4 >> 2)],
+  "stencil": !!GROWABLE_HEAP_I32()[a + (8 >> 2)],
+  "antialias": !!GROWABLE_HEAP_I32()[a + (12 >> 2)],
+  "premultipliedAlpha": !!GROWABLE_HEAP_I32()[a + (16 >> 2)],
+  "preserveDrawingBuffer": !!GROWABLE_HEAP_I32()[a + (20 >> 2)],
+  "powerPreference": __emscripten_webgl_power_preferences[powerPreference],
+  "failIfMajorPerformanceCaveat": !!GROWABLE_HEAP_I32()[a + (28 >> 2)],
+  majorVersion: GROWABLE_HEAP_I32()[a + (32 >> 2)],
+  minorVersion: GROWABLE_HEAP_I32()[a + (36 >> 2)],
+  enableExtensionsByDefault: GROWABLE_HEAP_I32()[a + (40 >> 2)],
+  explicitSwapControl: GROWABLE_HEAP_I32()[a + (44 >> 2)],
+  proxyContextToMainThread: GROWABLE_HEAP_I32()[a + (48 >> 2)],
+  renderViaOffscreenBackBuffer: GROWABLE_HEAP_I32()[a + (52 >> 2)]
+ };
+ var canvas = findCanvasEventTarget(target);
+ if (!canvas) {
+  return 0;
+ }
+ if (contextAttributes.explicitSwapControl) {
+  return 0;
+ }
+ var contextHandle = GL.createContext(canvas, contextAttributes);
+ return contextHandle;
+}
+
+function _emscripten_webgl_create_context(a0, a1) {
+ return _emscripten_webgl_do_create_context(a0, a1);
+}
+
+var ENV = {};
+
+function getExecutableName() {
+ return thisProgram || "./this.program";
+}
+
+function getEnvStrings() {
+ if (!getEnvStrings.strings) {
+  var lang = (typeof navigator === "object" && navigator.languages && navigator.languages[0] || "C").replace("-", "_") + ".UTF-8";
+  var env = {
+   "USER": "web_user",
+   "LOGNAME": "web_user",
+   "PATH": "/",
+   "PWD": "/",
+   "HOME": "/home/web_user",
+   "LANG": lang,
+   "_": getExecutableName()
+  };
+  for (var x in ENV) {
+   env[x] = ENV[x];
+  }
+  var strings = [];
+  for (var x in env) {
+   strings.push(x + "=" + env[x]);
+  }
+  getEnvStrings.strings = strings;
+ }
+ return getEnvStrings.strings;
+}
+
+function _environ_get(__environ, environ_buf) {
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(6, 1, __environ, environ_buf);
+ var bufSize = 0;
+ getEnvStrings().forEach(function(string, i) {
+  var ptr = environ_buf + bufSize;
+  GROWABLE_HEAP_I32()[__environ + i * 4 >> 2] = ptr;
+  writeAsciiToMemory(string, ptr);
+  bufSize += string.length + 1;
+ });
+ return 0;
+}
+
+function _environ_sizes_get(penviron_count, penviron_buf_size) {
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(7, 1, penviron_count, penviron_buf_size);
+ var strings = getEnvStrings();
+ GROWABLE_HEAP_I32()[penviron_count >> 2] = strings.length;
+ var bufSize = 0;
+ strings.forEach(function(string) {
+  bufSize += string.length + 1;
+ });
+ GROWABLE_HEAP_I32()[penviron_buf_size >> 2] = bufSize;
+ return 0;
+}
+
+function _exit(status) {
+ exit(status);
+}
+
+function _fd_close(fd) {
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(8, 1, fd);
+ return 0;
+}
+
+function _fd_read(fd, iov, iovcnt, pnum) {
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(9, 1, fd, iov, iovcnt, pnum);
+ var stream = SYSCALLS.getStreamFromFD(fd);
+ var num = SYSCALLS.doReadv(stream, iov, iovcnt);
+ GROWABLE_HEAP_I32()[pnum >> 2] = num;
+ return 0;
+}
+
+function _fd_seek(fd, offset_low, offset_high, whence, newOffset) {
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(10, 1, fd, offset_low, offset_high, whence, newOffset);
+}
+
+function _fd_write(fd, iov, iovcnt, pnum) {
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(11, 1, fd, iov, iovcnt, pnum);
+ var num = 0;
+ for (var i = 0; i < iovcnt; i++) {
+  var ptr = GROWABLE_HEAP_I32()[iov + i * 8 >> 2];
+  var len = GROWABLE_HEAP_I32()[iov + (i * 8 + 4) >> 2];
+  for (var j = 0; j < len; j++) {
+   SYSCALLS.printChar(fd, GROWABLE_HEAP_U8()[ptr + j]);
+  }
+  num += len;
+ }
+ GROWABLE_HEAP_I32()[pnum >> 2] = num;
+ return 0;
+}
+
+function spawnThread(threadParams) {
+ if (ENVIRONMENT_IS_PTHREAD) throw "Internal Error! spawnThread() can only ever be called from main application thread!";
+ var worker = PThread.getNewWorker();
+ if (worker.pthread !== undefined) throw "Internal error!";
+ if (!threadParams.pthread_ptr) throw "Internal error, no pthread ptr!";
+ PThread.runningWorkers.push(worker);
+ var tlsMemory = _malloc(128 * 4);
+ for (var i = 0; i < 128; ++i) {
+  GROWABLE_HEAP_I32()[tlsMemory + i * 4 >> 2] = 0;
+ }
+ var stackHigh = threadParams.stackBase + threadParams.stackSize;
+ var pthread = PThread.pthreads[threadParams.pthread_ptr] = {
+  worker: worker,
+  stackBase: threadParams.stackBase,
+  stackSize: threadParams.stackSize,
+  allocatedOwnStack: threadParams.allocatedOwnStack,
+  thread: threadParams.pthread_ptr,
+  threadInfoStruct: threadParams.pthread_ptr
+ };
+ var tis = pthread.threadInfoStruct >> 2;
+ Atomics.store(GROWABLE_HEAP_U32(), tis + (0 >> 2), 0);
+ Atomics.store(GROWABLE_HEAP_U32(), tis + (4 >> 2), 0);
+ Atomics.store(GROWABLE_HEAP_U32(), tis + (8 >> 2), 0);
+ Atomics.store(GROWABLE_HEAP_U32(), tis + (64 >> 2), threadParams.detached);
+ Atomics.store(GROWABLE_HEAP_U32(), tis + (100 >> 2), tlsMemory);
+ Atomics.store(GROWABLE_HEAP_U32(), tis + (44 >> 2), 0);
+ Atomics.store(GROWABLE_HEAP_U32(), tis + (40 >> 2), pthread.threadInfoStruct);
+ Atomics.store(GROWABLE_HEAP_U32(), tis + (80 >> 2), threadParams.stackSize);
+ Atomics.store(GROWABLE_HEAP_U32(), tis + (76 >> 2), stackHigh);
+ Atomics.store(GROWABLE_HEAP_U32(), tis + (104 >> 2), threadParams.stackSize);
+ Atomics.store(GROWABLE_HEAP_U32(), tis + (104 + 8 >> 2), stackHigh);
+ Atomics.store(GROWABLE_HEAP_U32(), tis + (104 + 12 >> 2), threadParams.detached);
+ Atomics.store(GROWABLE_HEAP_U32(), tis + (104 + 20 >> 2), threadParams.schedPolicy);
+ Atomics.store(GROWABLE_HEAP_U32(), tis + (104 + 24 >> 2), threadParams.schedPrio);
+ var global_libc = _emscripten_get_global_libc();
+ var global_locale = global_libc + 40;
+ Atomics.store(GROWABLE_HEAP_U32(), tis + (172 >> 2), global_locale);
+ worker.pthread = pthread;
+ var msg = {
+  "cmd": "run",
+  "start_routine": threadParams.startRoutine,
+  "arg": threadParams.arg,
+  "threadInfoStruct": threadParams.pthread_ptr,
+  "stackBase": threadParams.stackBase,
+  "stackSize": threadParams.stackSize
+ };
+ worker.runPthread = function() {
+  msg.time = performance.now();
+  worker.postMessage(msg, threadParams.transferList);
+ };
+ if (worker.loaded) {
+  worker.runPthread();
+  delete worker.runPthread;
+ }
+}
+
+function _pthread_getschedparam(thread, policy, schedparam) {
+ if (!policy && !schedparam) return ERRNO_CODES.EINVAL;
+ if (!thread) {
+  err("pthread_getschedparam called with a null thread pointer!");
+  return ERRNO_CODES.ESRCH;
+ }
+ var self = GROWABLE_HEAP_I32()[thread + 12 >> 2];
+ if (self !== thread) {
+  err("pthread_getschedparam attempted on thread " + thread + ", which does not point to a valid thread, or does not exist anymore!");
+  return ERRNO_CODES.ESRCH;
+ }
+ var schedPolicy = Atomics.load(GROWABLE_HEAP_U32(), thread + 104 + 20 >> 2);
+ var schedPrio = Atomics.load(GROWABLE_HEAP_U32(), thread + 104 + 24 >> 2);
+ if (policy) GROWABLE_HEAP_I32()[policy >> 2] = schedPolicy;
+ if (schedparam) GROWABLE_HEAP_I32()[schedparam >> 2] = schedPrio;
+ return 0;
+}
+
+function _pthread_create(pthread_ptr, attr, start_routine, arg) {
+ if (typeof SharedArrayBuffer === "undefined") {
+  err("Current environment does not support SharedArrayBuffer, pthreads are not available!");
+  return 6;
+ }
+ if (!pthread_ptr) {
+  err("pthread_create called with a null thread pointer!");
+  return 28;
+ }
+ var transferList = [];
+ var error = 0;
+ if (ENVIRONMENT_IS_PTHREAD && (transferList.length === 0 || error)) {
+  return _emscripten_sync_run_in_main_thread_4(687865856, pthread_ptr, attr, start_routine, arg);
+ }
+ if (error) return error;
+ var stackSize = 0;
+ var stackBase = 0;
+ var detached = 0;
+ var schedPolicy = 0;
+ var schedPrio = 0;
+ if (attr && attr != -1) {
+  stackSize = GROWABLE_HEAP_I32()[attr >> 2];
+  stackSize += 81920;
+  stackBase = GROWABLE_HEAP_I32()[attr + 8 >> 2];
+  detached = GROWABLE_HEAP_I32()[attr + 12 >> 2] !== 0;
+  var inheritSched = GROWABLE_HEAP_I32()[attr + 16 >> 2] === 0;
+  if (inheritSched) {
+   var prevSchedPolicy = GROWABLE_HEAP_I32()[attr + 20 >> 2];
+   var prevSchedPrio = GROWABLE_HEAP_I32()[attr + 24 >> 2];
+   var parentThreadPtr = PThread.currentProxiedOperationCallerThread ? PThread.currentProxiedOperationCallerThread : _pthread_self();
+   _pthread_getschedparam(parentThreadPtr, attr + 20, attr + 24);
+   schedPolicy = GROWABLE_HEAP_I32()[attr + 20 >> 2];
+   schedPrio = GROWABLE_HEAP_I32()[attr + 24 >> 2];
+   GROWABLE_HEAP_I32()[attr + 20 >> 2] = prevSchedPolicy;
+   GROWABLE_HEAP_I32()[attr + 24 >> 2] = prevSchedPrio;
+  } else {
+   schedPolicy = GROWABLE_HEAP_I32()[attr + 20 >> 2];
+   schedPrio = GROWABLE_HEAP_I32()[attr + 24 >> 2];
+  }
+ } else {
+  stackSize = 2097152;
+ }
+ var allocatedOwnStack = stackBase == 0;
+ if (allocatedOwnStack) {
+  stackBase = _memalign(16, stackSize);
+ } else {
+  stackBase -= stackSize;
+  assert(stackBase > 0);
+ }
+ var threadInfoStruct = _malloc(228);
+ for (var i = 0; i < 228 >> 2; ++i) GROWABLE_HEAP_U32()[(threadInfoStruct >> 2) + i] = 0;
+ GROWABLE_HEAP_I32()[pthread_ptr >> 2] = threadInfoStruct;
+ GROWABLE_HEAP_I32()[threadInfoStruct + 12 >> 2] = threadInfoStruct;
+ var headPtr = threadInfoStruct + 152;
+ GROWABLE_HEAP_I32()[headPtr >> 2] = headPtr;
+ var threadParams = {
+  stackBase: stackBase,
+  stackSize: stackSize,
+  allocatedOwnStack: allocatedOwnStack,
+  schedPolicy: schedPolicy,
+  schedPrio: schedPrio,
+  detached: detached,
+  startRoutine: start_routine,
+  pthread_ptr: threadInfoStruct,
+  arg: arg,
+  transferList: transferList
+ };
+ if (ENVIRONMENT_IS_PTHREAD) {
+  threadParams.cmd = "spawnThread";
+  postMessage(threadParams, transferList);
+ } else {
+  spawnThread(threadParams);
+ }
+ return 0;
+}
+
+function __pthread_testcancel_js() {
+ if (!ENVIRONMENT_IS_PTHREAD) return;
+ var tb = _pthread_self();
+ if (!tb) return;
+ var cancelDisabled = Atomics.load(GROWABLE_HEAP_U32(), tb + 56 >> 2);
+ if (cancelDisabled) return;
+ var canceled = Atomics.load(GROWABLE_HEAP_U32(), tb + 0 >> 2);
+ if (canceled == 2) throw "Canceled!";
+}
+
+function __emscripten_do_pthread_join(thread, status, block) {
+ if (!thread) {
+  err("pthread_join attempted on a null thread pointer!");
+  return ERRNO_CODES.ESRCH;
+ }
+ if (ENVIRONMENT_IS_PTHREAD && _pthread_self() == thread) {
+  err("PThread " + thread + " is attempting to join to itself!");
+  return ERRNO_CODES.EDEADLK;
+ } else if (!ENVIRONMENT_IS_PTHREAD && _emscripten_main_browser_thread_id() == thread) {
+  err("Main thread " + thread + " is attempting to join to itself!");
+  return ERRNO_CODES.EDEADLK;
+ }
+ var self = GROWABLE_HEAP_I32()[thread + 12 >> 2];
+ if (self !== thread) {
+  err("pthread_join attempted on thread " + thread + ", which does not point to a valid thread, or does not exist anymore!");
+  return ERRNO_CODES.ESRCH;
+ }
+ var detached = Atomics.load(GROWABLE_HEAP_U32(), thread + 64 >> 2);
+ if (detached) {
+  err("Attempted to join thread " + thread + ", which was already detached!");
+  return ERRNO_CODES.EINVAL;
+ }
+ if (block) {
+  _emscripten_check_blocking_allowed();
+ }
+ for (;;) {
+  var threadStatus = Atomics.load(GROWABLE_HEAP_U32(), thread + 0 >> 2);
+  if (threadStatus == 1) {
+   var threadExitCode = Atomics.load(GROWABLE_HEAP_U32(), thread + 4 >> 2);
+   if (status) GROWABLE_HEAP_I32()[status >> 2] = threadExitCode;
+   Atomics.store(GROWABLE_HEAP_U32(), thread + 64 >> 2, 1);
+   if (!ENVIRONMENT_IS_PTHREAD) cleanupThread(thread); else postMessage({
+    "cmd": "cleanupThread",
+    "thread": thread
+   });
+   return 0;
+  }
+  if (!block) {
+   return ERRNO_CODES.EBUSY;
+  }
+  __pthread_testcancel_js();
+  if (!ENVIRONMENT_IS_PTHREAD) _emscripten_main_thread_process_queued_calls();
+  _emscripten_futex_wait(thread + 0, threadStatus, ENVIRONMENT_IS_PTHREAD ? 100 : 1);
+ }
+}
+
+function _pthread_join(thread, status) {
+ return __emscripten_do_pthread_join(thread, status, true);
+}
+
+function __isLeapYear(year) {
+ return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+}
+
+function __arraySum(array, index) {
+ var sum = 0;
+ for (var i = 0; i <= index; sum += array[i++]) {}
+ return sum;
+}
+
+var __MONTH_DAYS_LEAP = [ 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
+
+var __MONTH_DAYS_REGULAR = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
+
+function __addDays(date, days) {
+ var newDate = new Date(date.getTime());
+ while (days > 0) {
+  var leap = __isLeapYear(newDate.getFullYear());
+  var currentMonth = newDate.getMonth();
+  var daysInCurrentMonth = (leap ? __MONTH_DAYS_LEAP : __MONTH_DAYS_REGULAR)[currentMonth];
+  if (days > daysInCurrentMonth - newDate.getDate()) {
+   days -= daysInCurrentMonth - newDate.getDate() + 1;
+   newDate.setDate(1);
+   if (currentMonth < 11) {
+    newDate.setMonth(currentMonth + 1);
+   } else {
+    newDate.setMonth(0);
+    newDate.setFullYear(newDate.getFullYear() + 1);
+   }
+  } else {
+   newDate.setDate(newDate.getDate() + days);
+   return newDate;
+  }
+ }
+ return newDate;
+}
+
+function _strftime(s, maxsize, format, tm) {
+ var tm_zone = GROWABLE_HEAP_I32()[tm + 40 >> 2];
+ var date = {
+  tm_sec: GROWABLE_HEAP_I32()[tm >> 2],
+  tm_min: GROWABLE_HEAP_I32()[tm + 4 >> 2],
+  tm_hour: GROWABLE_HEAP_I32()[tm + 8 >> 2],
+  tm_mday: GROWABLE_HEAP_I32()[tm + 12 >> 2],
+  tm_mon: GROWABLE_HEAP_I32()[tm + 16 >> 2],
+  tm_year: GROWABLE_HEAP_I32()[tm + 20 >> 2],
+  tm_wday: GROWABLE_HEAP_I32()[tm + 24 >> 2],
+  tm_yday: GROWABLE_HEAP_I32()[tm + 28 >> 2],
+  tm_isdst: GROWABLE_HEAP_I32()[tm + 32 >> 2],
+  tm_gmtoff: GROWABLE_HEAP_I32()[tm + 36 >> 2],
+  tm_zone: tm_zone ? UTF8ToString(tm_zone) : ""
+ };
+ var pattern = UTF8ToString(format);
+ var EXPANSION_RULES_1 = {
+  "%c": "%a %b %d %H:%M:%S %Y",
+  "%D": "%m/%d/%y",
+  "%F": "%Y-%m-%d",
+  "%h": "%b",
+  "%r": "%I:%M:%S %p",
+  "%R": "%H:%M",
+  "%T": "%H:%M:%S",
+  "%x": "%m/%d/%y",
+  "%X": "%H:%M:%S",
+  "%Ec": "%c",
+  "%EC": "%C",
+  "%Ex": "%m/%d/%y",
+  "%EX": "%H:%M:%S",
+  "%Ey": "%y",
+  "%EY": "%Y",
+  "%Od": "%d",
+  "%Oe": "%e",
+  "%OH": "%H",
+  "%OI": "%I",
+  "%Om": "%m",
+  "%OM": "%M",
+  "%OS": "%S",
+  "%Ou": "%u",
+  "%OU": "%U",
+  "%OV": "%V",
+  "%Ow": "%w",
+  "%OW": "%W",
+  "%Oy": "%y"
+ };
+ for (var rule in EXPANSION_RULES_1) {
+  pattern = pattern.replace(new RegExp(rule, "g"), EXPANSION_RULES_1[rule]);
+ }
+ var WEEKDAYS = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ];
+ var MONTHS = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+ function leadingSomething(value, digits, character) {
+  var str = typeof value === "number" ? value.toString() : value || "";
+  while (str.length < digits) {
+   str = character[0] + str;
+  }
+  return str;
+ }
+ function leadingNulls(value, digits) {
+  return leadingSomething(value, digits, "0");
+ }
+ function compareByDay(date1, date2) {
+  function sgn(value) {
+   return value < 0 ? -1 : value > 0 ? 1 : 0;
+  }
+  var compare;
+  if ((compare = sgn(date1.getFullYear() - date2.getFullYear())) === 0) {
+   if ((compare = sgn(date1.getMonth() - date2.getMonth())) === 0) {
+    compare = sgn(date1.getDate() - date2.getDate());
+   }
+  }
+  return compare;
+ }
+ function getFirstWeekStartDate(janFourth) {
+  switch (janFourth.getDay()) {
+  case 0:
+   return new Date(janFourth.getFullYear() - 1, 11, 29);
+
+  case 1:
+   return janFourth;
+
+  case 2:
+   return new Date(janFourth.getFullYear(), 0, 3);
+
+  case 3:
+   return new Date(janFourth.getFullYear(), 0, 2);
+
+  case 4:
+   return new Date(janFourth.getFullYear(), 0, 1);
+
+  case 5:
+   return new Date(janFourth.getFullYear() - 1, 11, 31);
+
+  case 6:
+   return new Date(janFourth.getFullYear() - 1, 11, 30);
+  }
+ }
+ function getWeekBasedYear(date) {
+  var thisDate = __addDays(new Date(date.tm_year + 1900, 0, 1), date.tm_yday);
+  var janFourthThisYear = new Date(thisDate.getFullYear(), 0, 4);
+  var janFourthNextYear = new Date(thisDate.getFullYear() + 1, 0, 4);
+  var firstWeekStartThisYear = getFirstWeekStartDate(janFourthThisYear);
+  var firstWeekStartNextYear = getFirstWeekStartDate(janFourthNextYear);
+  if (compareByDay(firstWeekStartThisYear, thisDate) <= 0) {
+   if (compareByDay(firstWeekStartNextYear, thisDate) <= 0) {
+    return thisDate.getFullYear() + 1;
+   } else {
+    return thisDate.getFullYear();
+   }
+  } else {
+   return thisDate.getFullYear() - 1;
+  }
+ }
+ var EXPANSION_RULES_2 = {
+  "%a": function(date) {
+   return WEEKDAYS[date.tm_wday].substring(0, 3);
+  },
+  "%A": function(date) {
+   return WEEKDAYS[date.tm_wday];
+  },
+  "%b": function(date) {
+   return MONTHS[date.tm_mon].substring(0, 3);
+  },
+  "%B": function(date) {
+   return MONTHS[date.tm_mon];
+  },
+  "%C": function(date) {
+   var year = date.tm_year + 1900;
+   return leadingNulls(year / 100 | 0, 2);
+  },
+  "%d": function(date) {
+   return leadingNulls(date.tm_mday, 2);
+  },
+  "%e": function(date) {
+   return leadingSomething(date.tm_mday, 2, " ");
+  },
+  "%g": function(date) {
+   return getWeekBasedYear(date).toString().substring(2);
+  },
+  "%G": function(date) {
+   return getWeekBasedYear(date);
+  },
+  "%H": function(date) {
+   return leadingNulls(date.tm_hour, 2);
+  },
+  "%I": function(date) {
+   var twelveHour = date.tm_hour;
+   if (twelveHour == 0) twelveHour = 12; else if (twelveHour > 12) twelveHour -= 12;
+   return leadingNulls(twelveHour, 2);
+  },
+  "%j": function(date) {
+   return leadingNulls(date.tm_mday + __arraySum(__isLeapYear(date.tm_year + 1900) ? __MONTH_DAYS_LEAP : __MONTH_DAYS_REGULAR, date.tm_mon - 1), 3);
+  },
+  "%m": function(date) {
+   return leadingNulls(date.tm_mon + 1, 2);
+  },
+  "%M": function(date) {
+   return leadingNulls(date.tm_min, 2);
+  },
+  "%n": function() {
+   return "\n";
+  },
+  "%p": function(date) {
+   if (date.tm_hour >= 0 && date.tm_hour < 12) {
+    return "AM";
+   } else {
+    return "PM";
+   }
+  },
+  "%S": function(date) {
+   return leadingNulls(date.tm_sec, 2);
+  },
+  "%t": function() {
+   return "\t";
+  },
+  "%u": function(date) {
+   return date.tm_wday || 7;
+  },
+  "%U": function(date) {
+   var janFirst = new Date(date.tm_year + 1900, 0, 1);
+   var firstSunday = janFirst.getDay() === 0 ? janFirst : __addDays(janFirst, 7 - janFirst.getDay());
+   var endDate = new Date(date.tm_year + 1900, date.tm_mon, date.tm_mday);
+   if (compareByDay(firstSunday, endDate) < 0) {
+    var februaryFirstUntilEndMonth = __arraySum(__isLeapYear(endDate.getFullYear()) ? __MONTH_DAYS_LEAP : __MONTH_DAYS_REGULAR, endDate.getMonth() - 1) - 31;
+    var firstSundayUntilEndJanuary = 31 - firstSunday.getDate();
+    var days = firstSundayUntilEndJanuary + februaryFirstUntilEndMonth + endDate.getDate();
+    return leadingNulls(Math.ceil(days / 7), 2);
+   }
+   return compareByDay(firstSunday, janFirst) === 0 ? "01" : "00";
+  },
+  "%V": function(date) {
+   var janFourthThisYear = new Date(date.tm_year + 1900, 0, 4);
+   var janFourthNextYear = new Date(date.tm_year + 1901, 0, 4);
+   var firstWeekStartThisYear = getFirstWeekStartDate(janFourthThisYear);
+   var firstWeekStartNextYear = getFirstWeekStartDate(janFourthNextYear);
+   var endDate = __addDays(new Date(date.tm_year + 1900, 0, 1), date.tm_yday);
+   if (compareByDay(endDate, firstWeekStartThisYear) < 0) {
+    return "53";
+   }
+   if (compareByDay(firstWeekStartNextYear, endDate) <= 0) {
+    return "01";
+   }
+   var daysDifference;
+   if (firstWeekStartThisYear.getFullYear() < date.tm_year + 1900) {
+    daysDifference = date.tm_yday + 32 - firstWeekStartThisYear.getDate();
+   } else {
+    daysDifference = date.tm_yday + 1 - firstWeekStartThisYear.getDate();
+   }
+   return leadingNulls(Math.ceil(daysDifference / 7), 2);
+  },
+  "%w": function(date) {
+   return date.tm_wday;
+  },
+  "%W": function(date) {
+   var janFirst = new Date(date.tm_year, 0, 1);
+   var firstMonday = janFirst.getDay() === 1 ? janFirst : __addDays(janFirst, janFirst.getDay() === 0 ? 1 : 7 - janFirst.getDay() + 1);
+   var endDate = new Date(date.tm_year + 1900, date.tm_mon, date.tm_mday);
+   if (compareByDay(firstMonday, endDate) < 0) {
+    var februaryFirstUntilEndMonth = __arraySum(__isLeapYear(endDate.getFullYear()) ? __MONTH_DAYS_LEAP : __MONTH_DAYS_REGULAR, endDate.getMonth() - 1) - 31;
+    var firstMondayUntilEndJanuary = 31 - firstMonday.getDate();
+    var days = firstMondayUntilEndJanuary + februaryFirstUntilEndMonth + endDate.getDate();
+    return leadingNulls(Math.ceil(days / 7), 2);
+   }
+   return compareByDay(firstMonday, janFirst) === 0 ? "01" : "00";
+  },
+  "%y": function(date) {
+   return (date.tm_year + 1900).toString().substring(2);
+  },
+  "%Y": function(date) {
+   return date.tm_year + 1900;
+  },
+  "%z": function(date) {
+   var off = date.tm_gmtoff;
+   var ahead = off >= 0;
+   off = Math.abs(off) / 60;
+   off = off / 60 * 100 + off % 60;
+   return (ahead ? "+" : "-") + String("0000" + off).slice(-4);
+  },
+  "%Z": function(date) {
+   return date.tm_zone;
+  },
+  "%%": function() {
+   return "%";
+  }
+ };
+ for (var rule in EXPANSION_RULES_2) {
+  if (pattern.indexOf(rule) >= 0) {
+   pattern = pattern.replace(new RegExp(rule, "g"), EXPANSION_RULES_2[rule](date));
+  }
+ }
+ var bytes = intArrayFromString(pattern, false);
+ if (bytes.length > maxsize) {
+  return 0;
+ }
+ writeArrayToMemory(bytes, s);
+ return bytes.length - 1;
+}
+
+function _strftime_l(s, maxsize, format, tm) {
+ return _strftime(s, maxsize, format, tm);
+}
+
+if (!ENVIRONMENT_IS_PTHREAD) PThread.initMainThreadBlock();
+
+var GLctx;
+
+var proxiedFunctionTable = [ null, _atexit, ___sys_fcntl64, ___sys_ioctl, ___sys_open, _emscripten_set_canvas_element_size_main_thread, _environ_get, _environ_sizes_get, _fd_close, _fd_read, _fd_seek, _fd_write ];
+
+function intArrayFromString(stringy, dontAddNull, length) {
+ var len = length > 0 ? length : lengthBytesUTF8(stringy) + 1;
+ var u8array = new Array(len);
+ var numBytesWritten = stringToUTF8Array(stringy, u8array, 0, u8array.length);
+ if (dontAddNull) u8array.length = numBytesWritten;
+ return u8array;
+}
+
+if (!ENVIRONMENT_IS_PTHREAD) __ATINIT__.push({
+ func: function() {
+  ___wasm_call_ctors();
+ }
+});
+
+var asmLibraryArg = {
+ "c": ___assert_fail,
+ "k": ___sys_fcntl64,
+ "q": ___sys_ioctl,
+ "r": ___sys_open,
+ "D": __emscripten_notify_thread_queue,
+ "b": _abort,
+ "E": _clock_gettime,
+ "o": _emscripten_asm_const_int,
+ "y": _emscripten_check_blocking_allowed,
+ "n": _emscripten_conditional_set_current_thread_status,
+ "f": _emscripten_futex_wait,
+ "e": _emscripten_futex_wake,
+ "g": _emscripten_get_now,
+ "u": _emscripten_memcpy_big,
+ "z": _emscripten_receive_on_main_thread_js,
+ "d": _emscripten_resize_heap,
+ "A": _emscripten_set_canvas_element_size,
+ "m": _emscripten_set_current_thread_status,
+ "C": _emscripten_webgl_create_context,
+ "w": _environ_get,
+ "x": _environ_sizes_get,
+ "h": _exit,
+ "i": _fd_close,
+ "p": _fd_read,
+ "s": _fd_seek,
+ "j": _fd_write,
+ "t": initPthreadsJS,
+ "a": wasmMemory || Module["wasmMemory"],
+ "l": _pthread_create,
+ "B": _pthread_join,
+ "v": _strftime_l
+};
+
+var asm = createWasm();
+
+var ___wasm_call_ctors = Module["___wasm_call_ctors"] = function() {
+ return (___wasm_call_ctors = Module["___wasm_call_ctors"] = Module["asm"]["G"]).apply(null, arguments);
+};
+
+var _main = Module["_main"] = function() {
+ return (_main = Module["_main"] = Module["asm"]["H"]).apply(null, arguments);
+};
+
+var _free = Module["_free"] = function() {
+ return (_free = Module["_free"] = Module["asm"]["I"]).apply(null, arguments);
+};
+
+var _uci_command = Module["_uci_command"] = function() {
+ return (_uci_command = Module["_uci_command"] = Module["asm"]["J"]).apply(null, arguments);
+};
+
+var _emscripten_get_global_libc = Module["_emscripten_get_global_libc"] = function() {
+ return (_emscripten_get_global_libc = Module["_emscripten_get_global_libc"] = Module["asm"]["K"]).apply(null, arguments);
+};
+
+var ___em_js__initPthreadsJS = Module["___em_js__initPthreadsJS"] = function() {
+ return (___em_js__initPthreadsJS = Module["___em_js__initPthreadsJS"] = Module["asm"]["L"]).apply(null, arguments);
+};
+
+var ___errno_location = Module["___errno_location"] = function() {
+ return (___errno_location = Module["___errno_location"] = Module["asm"]["M"]).apply(null, arguments);
+};
+
+var _malloc = Module["_malloc"] = function() {
+ return (_malloc = Module["_malloc"] = Module["asm"]["N"]).apply(null, arguments);
+};
+
+var _pthread_self = Module["_pthread_self"] = function() {
+ return (_pthread_self = Module["_pthread_self"] = Module["asm"]["O"]).apply(null, arguments);
+};
+
+var ___pthread_tsd_run_dtors = Module["___pthread_tsd_run_dtors"] = function() {
+ return (___pthread_tsd_run_dtors = Module["___pthread_tsd_run_dtors"] = Module["asm"]["P"]).apply(null, arguments);
+};
+
+var _emscripten_register_main_browser_thread_id = Module["_emscripten_register_main_browser_thread_id"] = function() {
+ return (_emscripten_register_main_browser_thread_id = Module["_emscripten_register_main_browser_thread_id"] = Module["asm"]["Q"]).apply(null, arguments);
+};
+
+var _emscripten_main_browser_thread_id = Module["_emscripten_main_browser_thread_id"] = function() {
+ return (_emscripten_main_browser_thread_id = Module["_emscripten_main_browser_thread_id"] = Module["asm"]["R"]).apply(null, arguments);
+};
+
+var __emscripten_do_dispatch_to_thread = Module["__emscripten_do_dispatch_to_thread"] = function() {
+ return (__emscripten_do_dispatch_to_thread = Module["__emscripten_do_dispatch_to_thread"] = Module["asm"]["S"]).apply(null, arguments);
+};
+
+var _emscripten_sync_run_in_main_thread_4 = Module["_emscripten_sync_run_in_main_thread_4"] = function() {
+ return (_emscripten_sync_run_in_main_thread_4 = Module["_emscripten_sync_run_in_main_thread_4"] = Module["asm"]["T"]).apply(null, arguments);
+};
+
+var _emscripten_main_thread_process_queued_calls = Module["_emscripten_main_thread_process_queued_calls"] = function() {
+ return (_emscripten_main_thread_process_queued_calls = Module["_emscripten_main_thread_process_queued_calls"] = Module["asm"]["U"]).apply(null, arguments);
+};
+
+var _emscripten_run_in_main_runtime_thread_js = Module["_emscripten_run_in_main_runtime_thread_js"] = function() {
+ return (_emscripten_run_in_main_runtime_thread_js = Module["_emscripten_run_in_main_runtime_thread_js"] = Module["asm"]["V"]).apply(null, arguments);
+};
+
+var __emscripten_call_on_thread = Module["__emscripten_call_on_thread"] = function() {
+ return (__emscripten_call_on_thread = Module["__emscripten_call_on_thread"] = Module["asm"]["W"]).apply(null, arguments);
+};
+
+var _emscripten_tls_init = Module["_emscripten_tls_init"] = function() {
+ return (_emscripten_tls_init = Module["_emscripten_tls_init"] = Module["asm"]["X"]).apply(null, arguments);
+};
+
+var __emscripten_thread_init = Module["__emscripten_thread_init"] = function() {
+ return (__emscripten_thread_init = Module["__emscripten_thread_init"] = Module["asm"]["Y"]).apply(null, arguments);
+};
+
+var stackSave = Module["stackSave"] = function() {
+ return (stackSave = Module["stackSave"] = Module["asm"]["Z"]).apply(null, arguments);
+};
+
+var stackRestore = Module["stackRestore"] = function() {
+ return (stackRestore = Module["stackRestore"] = Module["asm"]["_"]).apply(null, arguments);
+};
+
+var stackAlloc = Module["stackAlloc"] = function() {
+ return (stackAlloc = Module["stackAlloc"] = Module["asm"]["$"]).apply(null, arguments);
+};
+
+var _emscripten_stack_set_limits = Module["_emscripten_stack_set_limits"] = function() {
+ return (_emscripten_stack_set_limits = Module["_emscripten_stack_set_limits"] = Module["asm"]["aa"]).apply(null, arguments);
+};
+
+var _memalign = Module["_memalign"] = function() {
+ return (_memalign = Module["_memalign"] = Module["asm"]["ba"]).apply(null, arguments);
+};
+
+var __emscripten_main_thread_futex = Module["__emscripten_main_thread_futex"] = 22112864;
+
+Module["ccall"] = ccall;
+
+Module["PThread"] = PThread;
+
+Module["PThread"] = PThread;
+
+Module["wasmMemory"] = wasmMemory;
+
+Module["ExitStatus"] = ExitStatus;
+
+var calledRun;
+
+function ExitStatus(status) {
+ this.name = "ExitStatus";
+ this.message = "Program terminated with exit(" + status + ")";
+ this.status = status;
+}
+
+var calledMain = false;
+
+dependenciesFulfilled = function runCaller() {
+ if (!calledRun) run();
+ if (!calledRun) dependenciesFulfilled = runCaller;
+};
+
+function callMain(args) {
+ var entryFunction = Module["_main"];
+ args = args || [];
+ var argc = args.length + 1;
+ var argv = stackAlloc((argc + 1) * 4);
+ GROWABLE_HEAP_I32()[argv >> 2] = allocateUTF8OnStack(thisProgram);
+ for (var i = 1; i < argc; i++) {
+  GROWABLE_HEAP_I32()[(argv >> 2) + i] = allocateUTF8OnStack(args[i - 1]);
+ }
+ GROWABLE_HEAP_I32()[(argv >> 2) + argc] = 0;
+ try {
+  var ret = entryFunction(argc, argv);
+  exit(ret, true);
+ } catch (e) {
+  if (e instanceof ExitStatus) {
+   return;
+  } else if (e == "unwind") {
+   noExitRuntime = true;
+   return;
+  } else {
+   var toLog = e;
+   if (e && typeof e === "object" && e.stack) {
+    toLog = [ e, e.stack ];
+   }
+   err("exception thrown: " + toLog);
+   quit_(1, e);
+  }
+ } finally {
+  calledMain = true;
+ }
+}
+
+function run(args) {
+ args = args || arguments_;
+ if (runDependencies > 0) {
+  return;
+ }
+ preRun();
+ if (runDependencies > 0) return;
+ function doRun() {
+  if (calledRun) return;
+  calledRun = true;
+  Module["calledRun"] = true;
+  if (ABORT) return;
+  initRuntime();
+  preMain();
+  readyPromiseResolve(Module);
+  if (Module["onRuntimeInitialized"]) Module["onRuntimeInitialized"]();
+  if (shouldRunNow) callMain(args);
+  postRun();
+ }
+ {
+  doRun();
+ }
+}
+
+Module["run"] = run;
+
+function exit(status, implicit) {
+ if (implicit && noExitRuntime && status === 0) {
+  return;
+ }
+ if (!implicit) {
+  if (ENVIRONMENT_IS_PTHREAD) {
+   postMessage({
+    "cmd": "exitProcess",
+    "returnCode": status
+   });
+   throw new ExitStatus(status);
+  } else {}
+ }
+ if (noExitRuntime) {} else {
+  PThread.terminateAllThreads();
+  EXITSTATUS = status;
+  exitRuntime();
+  ABORT = true;
+ }
+ quit_(status, new ExitStatus(status));
+}
+
+var shouldRunNow = true;
+
+noExitRuntime = !ENVIRONMENT_IS_PTHREAD;
+
+if (!ENVIRONMENT_IS_PTHREAD) {
+ run();
+} else {
+ PThread.initWorker();
+}
 
 
   return Stockfish.ready

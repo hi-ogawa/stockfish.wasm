@@ -1,24 +1,11 @@
 {
-  "name": "stockfish.wasm",
-  "version": "0.9.1",
-  "description": "WebAssembly port of the strong chess engine Stockfish",
-  "keywords": ["chess", "stockfish", "emscripten", "lichess", "webassembly"],
-  "author": "Niklas Fiekas <niklas.fiekas@backscattering.de>",
-  "license": "GPL-3.0",
-  "repository": "github:niklasf/stockfish.wasm",
-  "homepage": "https://github.com/niklasf/stockfish.wasm#readme",
-  "bugs": {
-    "url": "https://github.com/niklasf/stockfish.wasm/issues",
-    "email": "niklas.fiekas@backscattering.de"
-  },
+  "name": "stockfish-nnue.wasm",
+  "version": "0.0.0",
   "main": "dist/stockfish.js",
   "files": [
     "Copying.txt",
     "dist/stockfish.js",
     "dist/stockfish.wasm",
     "dist/stockfish.worker.js"
-  ],
-  "scripts": {
-    "prepare": "cd src && make clean && make ARCH=wasm build -j && cd .. && cat preamble.js src/stockfish.js > stockfish.js && cp src/stockfish.worker.js src/stockfish.wasm ."
-  }
+  ]
 }
